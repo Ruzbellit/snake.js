@@ -46,6 +46,14 @@
     return make(world, {});
   }
 
+  function toggleNitro(speed) {
+    if (speed == 5) {
+      return 15;
+    } else {
+      return 5;
+    }
+  }
+
   const dx = 20;
   const dy = 20;
 
@@ -59,34 +67,28 @@
      * Esto se llama antes de iniciar el juego
      */
     processing.setup = function () {
-      processing.frameRate(5);
       processing.size(400, 400);
       processing.background(200, 0, 180);
-      processing.state = {snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }], dir: {x: 1, y: 0}, food: {x: 5, y: 5 }};
+      processing.state = {snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }], dir: {x: 1, y: 0}, food: {x: 5, y: 5 }, speed: 5};
     }
-
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
     processing.drawGame = function (world) {
       processing.background(200, 0, 180);
+
+      // Establece la velocidad
+      processing.frameRate(world.speed);
+
+      // Pinta la culebrita
       processing.fill(240, 240, 240);
       apply(world.snake, s => {
         processing.rect(s.x * dx, s.y * dy, dx, dy);
       });
-      // HEAD: 3,1
-      // apply(world.food{{, s => {
-      //   processing.rect(s.x * dx, s.y * dy, dx, dy);
-      // });}}
 
-      // pintar comida
-      // processing.fill(240, 20, 10);
+      // Pinta la comida
       processing.fill(200, 20, 10);
       processing.rect(world.food.x * dx, world.food.y * dy, dx, dy);
-      // TODO: pintar aleatoriamente
-      // processing.drawFood(world);
-      // processing.rect(world.food.x * dx, world.food.y * dy,  dx, dy);
-
-      //processing.rect(world.x, world.y, world.ancho, world.alto);
+      
     }
 
 
@@ -120,6 +122,9 @@
           break;
         case processing.RIGHT:
           return make(world, {dir: {y: 0, x: 1}});
+          break;
+        case 32:
+          return make(world, {speed: toggleNitro(world.speed)});
           break;
         default:
           console.log(keyCode);
