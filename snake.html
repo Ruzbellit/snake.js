@@ -41,7 +41,8 @@
       // si la cabeza está sobre la comida
       return make(world, {
         snake: cons({x: head.x + world.dir.x, y: head.y + world.dir.y}, world.snake),
-        food: generateFood()});
+        food: generateFood(),
+        score: world.score +5 });
     }
     return make(world, {});
   }
@@ -68,13 +69,13 @@
      */
     processing.setup = function () {
       processing.size(400, 400);
-      processing.background(200, 0, 180);
-      processing.state = {snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }], dir: {x: 1, y: 0}, food: {x: 5, y: 5 }, speed: 5};
+      processing.background(255, 153, 255);
+      processing.state = {snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }], dir: {x: 1, y: 0}, food: {x: 5, y: 5 }, speed: 5, score: 0};
     }
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
     processing.drawGame = function (world) {
-      processing.background(200, 0, 180);
+      processing.background(255, 153, 255);
 
       // Establece la velocidad
       processing.frameRate(world.speed);
@@ -88,7 +89,11 @@
       // Pinta la comida
       processing.fill(200, 20, 10);
       processing.rect(world.food.x * dx, world.food.y * dy, dx, dy);
-      
+
+      // Pinta el score
+      processing.fill(0, 0, 0);
+      processing.textFont(processing.PFont, 18);
+      processing.text("Score: " + world.score, 10, 380);
     }
 
 
