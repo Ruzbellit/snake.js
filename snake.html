@@ -25,15 +25,18 @@
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  /**
-   * 
+  /**generateFood: this function randomly generate the food on the canvas
+   *@return: position 
+   *@example: x: 13, y: 7
    */
   function generateFood() {
     return {x: getRandomInt(0, 20), y: getRandomInt(0, 20)};
   }
 
-  /**
-   * 
+  /**eatFood this function verify if the food and the snake’s head are in the same position,
+   *if so it returns the world with a new position for the food and an adicional part on the snake.
+   *@param: object
+   *@return object
    */
   function eatFood(world) {
     const head = first(world.snake);
@@ -47,6 +50,11 @@
     return make(world, {});
   }
 
+  /**toggleNitro this function change the speed if is 5 change to 15 and vice versa
+  *@param: number
+  *@return: number
+  *@example: toggleNitro(5) -> 15
+  */
   function toggleNitro(speed) {
     if (speed == 5) {
       return 15;
@@ -81,13 +89,13 @@
       processing.frameRate(world.speed);
 
       // Pinta la culebrita
-      processing.fill(240, 240, 240);
+      processing.fill(153, 204, 255);
       apply(world.snake, s => {
         processing.rect(s.x * dx, s.y * dy, dx, dy);
       });
 
       // Pinta la comida
-      processing.fill(200, 20, 10);
+      processing.fill(204, 0, 255);
       processing.rect(world.food.x * dx, world.food.y * dy, dx, dy);
 
       // Pinta el score
@@ -117,16 +125,32 @@
     processing.onKeyEvent = function (world, keyCode) {
       switch (keyCode) {
         case processing.UP:
-          return make(world, {dir: {y: -1, x: 0}});
+          if ((world.dir.x !== 0) && (world.dir.y !== 1)) {
+            return make(world, {dir: {y: -1, x: 0}});
+          } else {
+            return make(world, {});
+          }
           break;
         case processing.DOWN:
-          return make(world, {dir: {y: 1, x: 0}});
+          if ((world.dir.x !== 0) && (world.dir.y !== -1)){
+            return make(world, {dir: {y: 1, x: 0}});
+          } else {
+            return make(world, {});
+          }
           break;
         case processing.LEFT:
-          return make(world, {dir: {y: 0, x: -1}});
+          if ((world.dir.x !== 1) && (world.dir.y !== 0)){
+            return make(world, {dir: {y: 0, x: -1}});
+          } else {
+            return make(world, {});
+          }
           break;
         case processing.RIGHT:
-          return make(world, {dir: {y: 0, x: 1}});
+          if ((world.dir.x !== -1) && (world.dir.y !== 0)){
+            return make(world, {dir: {y: 0, x: 1}});
+          } else {
+            return make(world, {});
+          }
           break;
         case 32:
           return make(world, {speed: toggleNitro(world.speed)});
