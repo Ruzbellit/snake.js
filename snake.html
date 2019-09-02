@@ -17,7 +17,7 @@
 
   function moveSnake(snake, dir) {
     const head = first(snake);
-    return cons({x: head.x + dir.x, y: head.y + dir.y}, snake.slice(0, length(snake) - 1));
+    return cons({ x: head.x + dir.x, y: head.y + dir.y }, snake.slice(0, length(snake) - 1));
   }
 
   // Retorna un entero aleatorio entre min (incluido) y max (excluido)
@@ -30,7 +30,7 @@
    *@example: x: 13, y: 7
    */
   function generateFood() {
-    return {x: getRandomInt(0, 20), y: getRandomInt(0, 20)};
+    return { x: getRandomInt(0, 20), y: getRandomInt(0, 20) };
   }
 
   /**eatFood this function verify if the food and the snake’s head are in the same position,
@@ -40,12 +40,13 @@
    */
   function eatFood(world) {
     const head = first(world.snake);
-    if(head.x == world.food.x && head.y == world.food.y) {
+    if (head.x == world.food.x && head.y == world.food.y) {
       // si la cabeza está sobre la comida
       return make(world, {
-        snake: cons({x: head.x + world.dir.x, y: head.y + world.dir.y}, world.snake),
+        snake: cons({ x: head.x + world.dir.x, y: head.y + world.dir.y }, world.snake),
         food: generateFood(),
-        score: world.score +5 });
+        score: world.score + 5
+      });
     }
     return make(world, {});
   }
@@ -78,7 +79,7 @@
     processing.setup = function () {
       processing.size(400, 400);
       processing.background(255, 153, 255);
-      processing.state = {snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }], dir: {x: 1, y: 0}, food: {x: 5, y: 5 }, speed: 5, score: 0};
+      processing.state = { snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }], dir: { x: 1, y: 0 }, food: { x: 5, y: 5 }, speed: 5, score: 0 };
     }
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
@@ -113,47 +114,72 @@
     };
 
     /**
-    * Actualiza el mundo en cada tic del reloj. Retorna el nuevo stado del mundo
+    * Actualiza el mundo en cada tic del reloj. Retorna el nuevo estado del mundo
     */
     processing.onTic = function (world) {
-      return eatFood( make(world, {snake: moveSnake(world.snake, world.dir)}) );
+      return eatFood(make(world, { snake: moveSnake(world.snake, world.dir) }));
     }
 
     /**
-    * Actualiza el mundo cada vez que se oprime una tecla. Retorna el nuevo stado del mundo
+    * Actualiza el mundo cada vez que se oprime una tecla. Retorna el nuevo estado del mundo
     */
     processing.onKeyEvent = function (world, keyCode) {
       switch (keyCode) {
         case processing.UP:
           if ((world.dir.x !== 0) && (world.dir.y !== 1)) {
-            return make(world, {dir: {y: -1, x: 0}});
+            return make(world, { dir: { y: -1, x: 0 } });
           } else {
             return make(world, {});
           }
           break;
         case processing.DOWN:
-          if ((world.dir.x !== 0) && (world.dir.y !== -1)){
-            return make(world, {dir: {y: 1, x: 0}});
+          if ((world.dir.x !== 0) && (world.dir.y !== -1)) {
+            return make(world, { dir: { y: 1, x: 0 } });
           } else {
             return make(world, {});
           }
           break;
         case processing.LEFT:
-          if ((world.dir.x !== 1) && (world.dir.y !== 0)){
-            return make(world, {dir: {y: 0, x: -1}});
+          if ((world.dir.x !== 1) && (world.dir.y !== 0)) {
+            return make(world, { dir: { y: 0, x: -1 } });
           } else {
             return make(world, {});
           }
           break;
         case processing.RIGHT:
-          if ((world.dir.x !== -1) && (world.dir.y !== 0)){
-            return make(world, {dir: {y: 0, x: 1}});
+          if ((world.dir.x !== -1) && (world.dir.y !== 0)) {
+            return make(world, { dir: { y: 0, x: 1 } });
           } else {
             return make(world, {});
           }
           break;
+        case 87:  //W
+          if ((world.dir.x !== 0) && (world.dir.y !== 1)) {
+            return make(world, { dir: { y: -1, x: 0 } });
+          } else {
+            return make(world, {});
+          }
+          break;
+        case 83:  //S
+          if ((world.dir.x !== 0) && (world.dir.y !== -1)) {
+            return make(world, { dir: { y: 1, x: 0 } });
+          } else {
+            return make(world, {});
+          } break;
+        case 65:  //A
+          if ((world.dir.x !== 1) && (world.dir.y !== 0)) {
+            return  make(world, { dir: { y: 0, x: -1 } });
+          } else {
+            return make(world, {});
+          } break;
+        case 68:  //D
+          if ((world.dir.x !== -1) && (world.dir.y !== 0)) {
+            return  make(world, { dir: { y: 0, x: 1 } });
+          } else {
+            return make(world, {})
+          } break;
         case 32:
-          return make(world, {speed: toggleNitro(world.speed)});
+          return make(world, { speed: toggleNitro(world.speed) });
           break;
         default:
           console.log(keyCode);
@@ -161,8 +187,8 @@
       }
     }
 
-    processing.onMouseEvent = function(a, b) {
-        return a;
+    processing.onMouseEvent = function (a, b) {
+      return a;
     }
 
     // Esta función se ejecuta cada vez que presionamos una tecla. 
@@ -172,31 +198,31 @@
     }
     // Esta función se ejecuta cada vez movemos el mouse. 
     // No cambie esta función. Su código debe ir en onKeyEvent
-    processing.mouseMoved = function() {
-      processing.state = processing.onMouseEvent(processing.state, 
-      {action: "move", mouseX: processing.mouseX, mouseY: processing.mouseY});
+    processing.mouseMoved = function () {
+      processing.state = processing.onMouseEvent(processing.state,
+        { action: "move", mouseX: processing.mouseX, mouseY: processing.mouseY });
     }
 
     // Estas funciones controlan los eventos del mouse. 
     // No cambie estas funciones. Su código debe ir en OnMouseEvent
-    processing.mouseClicked = function() {
-      processing.state = processing.onMouseEvent(processing.state, 
-      {action: "click", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton});
-    } 
-
-    processing.mouseDragged = function() {
-      processing.state = processing.onMouseEvent(processing.state, 
-      {action: "drag", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton});
+    processing.mouseClicked = function () {
+      processing.state = processing.onMouseEvent(processing.state,
+        { action: "click", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton });
     }
 
-    processing.mousePressed = function() {
-      processing.state = processing.onMouseEvent(processing.state, 
-      {action: "press", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton});
+    processing.mouseDragged = function () {
+      processing.state = processing.onMouseEvent(processing.state,
+        { action: "drag", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton });
     }
 
-    processing.mouseReleased = function() {
-      processing.state = processing.onMouseEvent(processing.state, 
-      {action: "release", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton});
+    processing.mousePressed = function () {
+      processing.state = processing.onMouseEvent(processing.state,
+        { action: "press", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton });
+    }
+
+    processing.mouseReleased = function () {
+      processing.state = processing.onMouseEvent(processing.state,
+        { action: "release", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton });
     }
   }
 
