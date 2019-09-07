@@ -5,9 +5,9 @@
   //Vamos a usar http://processingjs.org/
   // o https://p5js.org/reference/
 
-
   // Importamos las librerias
   let { append, cons, first, isEmpty, isList, length, rest, map } = require("fl-extended");
+
   function apply(a, f) {
     if (!isEmpty(a)) {
       f(first(a));
@@ -55,7 +55,7 @@
     if ((first(world.snake).x >= 0 && first(world.snake).x <= 19) && (first(world.snake).y >= 0 && first(world.snake).y <= 19)) {
       return make(world, {})    //Limita el espacio de la serpientita, se muere y hace pum!
     } else {
-      alert("Game over")
+      return make(world, { snake: cons(first(world.snake1), rest(world.snake1), []) })
     }
   }
 
@@ -87,17 +87,22 @@
       processing.size(800, 800);
       processing.background(255, 153, 255);
       processing.state = {
+        snake1: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
         snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
         dir: { x: 1, y: 0 },
         food: { x: 5, y: 5 },
         speed: 5,
-        score: 0
+        score: 0,
+        vida: 3
       };
+      fondo = processing.loadImage('data/fondo/ground.png');
+      comida = processing.loadImage('data/comida/food.png');
     }
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
     processing.drawGame = function (world) {
       processing.background(255, 153, 255);
+      processing.image(fondo, 0, 0, 800, 800);
 
       // Establece la velocidad
       processing.frameRate(world.speed);
@@ -110,12 +115,14 @@
 
       // Pinta la comida
       processing.fill(204, 0, 255);
-      processing.rect(world.food.x * dx, world.food.y * dy, dx, dy);
+      processing.image(comida, world.food.x * dx, world.food.y * dy, dx, dy);
 
       // Pinta el score
       processing.fill(0, 0, 0);
       processing.textFont(processing.PFont, 18);
-      processing.text("Score: " + world.score, 10, 380);
+      processing.text("Score: " + world.score, 10, 780);
+      processing.textFont(processing.PFont, 18);
+      processing.text("Vidas: " + world.vida, 315, 780);
     }
 
 
