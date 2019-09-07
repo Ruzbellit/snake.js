@@ -45,24 +45,36 @@
       return make(world, {
         snake: cons({ x: head.x + world.dir.x, y: head.y + world.dir.y }, world.snake),
         food: generateFood(),
-        score: world.score + 5
+        score: world.score + 10
       });
     }
     return make(world, {});
   }
 
   function eatLife(world) {
-    const head = first(world.snake);
-    if (head.x == world.life.x && head.y == world.life.y) {
-      // si la cabeza está sobre la comida
-      return make(world, {
-        life: generateFood(),
-        vida: world.vida + 1
-      });
+    if (world.l === true) {
+      const head = first(world.snake);
+      if (head.x == world.life.x && head.y == world.life.y) {
+        // si la cabeza está sobre la comida
+        return make(world, {
+          life: generateFood(),
+          vida: world.vida + 1,
+          score: world.score + 10,
+          l: false
+        });
+      }
+      return make(world, {});
+    } else {
+      return make(world, {});
     }
-    return make(world, {});
   }
-
+function score(world){
+  if(world.score % 100 == 0){
+    return make(world,{l: true})
+  }else{
+    return make(world, {})
+  }
+}
   /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
   *@param: object
   *@return: object
@@ -74,7 +86,7 @@
       if (world.vida == 0) {
         alert("Game over")
       } else {
-        return make(world, { snake: world.snake1, dir: { x: 1, y: 0 }, vida: world.vida - 1 })
+        return make(world, { snake: world.snake1, dir: { x: 1, y: 0 }, vida: world.vida - 1, speed: 5, score: 10, food: generateFood() })
       }
     }
   }
@@ -110,15 +122,17 @@
         snake1: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
         snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
         dir: { x: 1, y: 0 },
-        food: { x: 5, y: 5 },
-        life: { x: 6, y: 6 },
+        food: { x: generateFood().x, y: generateFood().y },
+        life: { x: 10, y: 8 },
         speed: 5,
-        score: 0,
-        vida: 3
+        score: 10,
+        vida: 3,
+        l: false
       };
       fondo = processing.loadImage('data/fondo/ground.png');
       comida = processing.loadImage('data/comida/food.png');
       life = processing.loadImage('data/especiales/God.png');
+      skin = processing.loadImage('data/01.png')
     }
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
@@ -132,15 +146,13 @@
       // Pinta la culebrita
       processing.fill(153, 204, 255);
       apply(world.snake, s => {
-        processing.rect(s.x * dx, s.y * dy, dx, dy);
+        processing.image(skin, s.x * dx, s.y * dy, dx, dy);
       });
+
 
       // Pinta la comida
       processing.fill(204, 0, 255);
       processing.image(comida, world.food.x * dx, world.food.y * dy, dx, dy);
-
-      //Pinta las vidas adicionales
-      processing.image(life, world.life.x * dx, world.life.y * dy, dx, dy);
 
       // Pinta el score
       processing.fill(0, 0, 0);
@@ -148,6 +160,14 @@
       processing.text("Score: " + world.score, 10, 780);
       processing.textFont(processing.PFont, 18);
       processing.text("Vidas: " + world.vida, 315, 780);
+
+      //Pinta las vidas adicionales
+
+      if (world.l == true) {
+        return processing.image(life, world.life.x * dx, world.life.y * dy, dx, dy);
+      } else {
+        return 0
+      }
     }
 
 
@@ -162,7 +182,7 @@
     * Actualiza el mundo en cada tic del reloj. Retorna el nuevo estado del mundo
     */
     processing.onTic = function (world) {
-      return collision(eatLife(eatFood(make(world, { snake: moveSnake(world.snake, world.dir) }))));
+      return score(collision(eatLife(eatFood(make(world, { snake: moveSnake(world.snake, world.dir) })))));
     }
 
     /**
@@ -223,7 +243,7 @@
           } else {
             return make(world, {})
           } break;
-        case 32:
+        case 32: //Space
           return make(world, { speed: toggleNitro(world.speed) });
           break;
         default:
