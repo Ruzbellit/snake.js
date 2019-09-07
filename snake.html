@@ -57,15 +57,15 @@
   *@example: toggleNitro(5) -> 15
   */
   function toggleNitro(speed) {
-    if (speed == 5) {
-      return 15;
+    if (speed == 6) {
+      return 12;
     } else {
-      return 5;
+      return 6;
     }
   }
 
-  const dx = 20;
-  const dy = 20;
+  const dx = 40;
+  const dy = 40;
 
   function make(data, attribute) {
     return Object.assign({}, data, attribute);
@@ -77,9 +77,14 @@
      * Esto se llama antes de iniciar el juego
      */
     processing.setup = function () {
-      processing.size(400, 400);
+      processing.size(800, 800);
       processing.background(255, 153, 255);
-      processing.state = { snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }], dir: { x: 1, y: 0 }, food: { x: 5, y: 5 }, speed: 5, score: 0 };
+      processing.state = {
+        snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }], dir: { x: 1, y: 0 },
+        food: { x: 5, y: 5 },
+        speed: 6,
+        score: 0
+      };
     }
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
@@ -168,13 +173,13 @@
           } break;
         case 65:  //A
           if ((world.dir.x !== 1) && (world.dir.y !== 0)) {
-            return  make(world, { dir: { y: 0, x: -1 } });
+            return make(world, { dir: { y: 0, x: -1 } });
           } else {
             return make(world, {});
           } break;
         case 68:  //D
           if ((world.dir.x !== -1) && (world.dir.y !== 0)) {
-            return  make(world, { dir: { y: 0, x: 1 } });
+            return make(world, { dir: { y: 0, x: 1 } });
           } else {
             return make(world, {})
           } break;
@@ -187,42 +192,10 @@
       }
     }
 
-    processing.onMouseEvent = function (a, b) {
-      return a;
-    }
-
     // Esta función se ejecuta cada vez que presionamos una tecla. 
     // No cambie esta función. Su código debe ir en onKeyEvent
     processing.keyPressed = function () {
       processing.state = processing.onKeyEvent(processing.state, processing.keyCode);
-    }
-    // Esta función se ejecuta cada vez movemos el mouse. 
-    // No cambie esta función. Su código debe ir en onKeyEvent
-    processing.mouseMoved = function () {
-      processing.state = processing.onMouseEvent(processing.state,
-        { action: "move", mouseX: processing.mouseX, mouseY: processing.mouseY });
-    }
-
-    // Estas funciones controlan los eventos del mouse. 
-    // No cambie estas funciones. Su código debe ir en OnMouseEvent
-    processing.mouseClicked = function () {
-      processing.state = processing.onMouseEvent(processing.state,
-        { action: "click", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton });
-    }
-
-    processing.mouseDragged = function () {
-      processing.state = processing.onMouseEvent(processing.state,
-        { action: "drag", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton });
-    }
-
-    processing.mousePressed = function () {
-      processing.state = processing.onMouseEvent(processing.state,
-        { action: "press", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton });
-    }
-
-    processing.mouseReleased = function () {
-      processing.state = processing.onMouseEvent(processing.state,
-        { action: "release", mouseX: processing.mouseX, mouseY: processing.mouseY, mouseButton: processing.mouseButton });
     }
   }
 
