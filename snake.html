@@ -51,15 +51,23 @@
     return make(world, {});
   }
 
+  /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
+  *@param: object
+  *@return: object
+  */
   function collision(world) {
     if ((first(world.snake).x >= 0 && first(world.snake).x <= 19) && (first(world.snake).y >= 0 && first(world.snake).y <= 19)) {
       return make(world, {})    //Limita el espacio de la serpientita, se muere y hace pum!
     } else {
-      return make(world, { snake: cons(first(world.snake1), rest(world.snake1), []) })
+      if (world.vida == 0) {
+        alert("Game over")
+      } else {
+        return make(world, { snake: world.snake1, dir: { x: 1, y: 0 }, vida: world.vida - 1 })
+      }
     }
   }
 
-  /**toggleNitro this function change the speed if is 5 change to 15 and vice versa
+  /**toggleNitro: this function change the speed if is 5 change to 15 and vice versa
   *@param: number
   *@return: number
   *@example: toggleNitro(5) -> 15
