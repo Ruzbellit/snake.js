@@ -1,0 +1,344 @@
+<canvas id="canvas" width="300" height="300"></canvas>
+<script src="web-lib/processing.js"></script>
+<script src="web-lib/fl-extended.js"></script>
+<script>
+  //Vamos a usar http://processingjs.org/
+  // o https://p5js.org/reference/
+
+  // Importamos las librerias
+  let { append, cons, first, isEmpty, isList, length, rest, map } = require("fl-extended");
+
+  function apply(a, f) {
+    if (!isEmpty(a)) {
+      f(first(a));
+      apply(rest(a), f);
+    }
+  }
+  /*
+  *
+  */
+  function moveSnake(mundo) {
+    if (mundo.pausa === false) {
+      return make(mundo, {
+        snakeP1: cons({ x: first(mundo.snakeP1).x + mundo.direccionP1.x, y: first(mundo.snakeP1).y + mundo.direccionP1.y }, mundo.snakeP1.slice(0, length(mundo.snakeP1) - 1)),
+        snakeP2: cons({ x: first(mundo.snakeP2).x + mundo.direccionP2.x, y: first(mundo.snakeP2).y + mundo.direccionP2.y }, mundo.snakeP2.slice(0, length(mundo.snakeP2) - 1))
+      });
+    } else {
+      return make(mundo, {});
+    }
+  }
+
+  // Retorna un entero aleatorio entre min (incluido) y max (excluido)
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  /**generateFood: this function randomly generate the food on the canvas
+   *@return: position 
+   *@example: x: 13, y: 7
+   */
+  function generateFood(minX, maxX, minY, maxY) {
+    return { x: getRandomInt(minX, maxX), y: getRandomInt(minY, maxY) };
+  }
+
+  /**eatFood this function verify if the food and the snake’s head are in the same position,
+   *if so it returns the world with a new position for the food and an adicional part on the snake.
+   *@param: object
+   *@return object
+   */
+  function comerComida(mundo) {
+    const cabezaP1 = first(mundo.snakeP1);
+    if (cabezaP1.x == mundo.posicionComida.x && cabezaP1.y == mundo.posicionComida.y) { // si la cabeza del P1 está sobre la comida
+      return make(mundo, {
+        snakeP1: cons({ x: cabezaP1.x + mundo.direccionP1.x, y: cabezaP1.y + mundo.direccionP1.y }, mundo.snakeP1),
+        posicionComida: generateFood(0, mundo.colisionX, 0, mundo.colisionY),
+        puntajeP1: mundo.puntajeP1 + 10
+      });
+    } else {
+      const cabezaP2 = first(mundo.snakeP2);
+      if (cabezaP2.x == mundo.posicionComida.x && cabezaP2.y == mundo.posicionComida.y) {  // si la cabeza del P2 está sobre la comida
+        return make(mundo, {
+          snakeP2: cons({ x: cabezaP2.x + mundo.direccionP2.x, y: cabezaP2.y + mundo.direccionP2.y }, mundo.snakeP2),
+          posicionComida: generateFood(0, mundo.colisionX, 0, mundo.colisionY),
+          puntajeP2: mundo.puntajeP2 + 10
+        });
+      } else {
+        return make(mundo, {});
+      }
+    }
+  }
+
+  function comerVida(mundo) {
+    if (mundo.aparecerVida === true) {
+      const cabezaP1 = first(mundo.snakeP1);
+      if (cabezaP1.x == mundo.posicionVida.x && cabezaP1.y == mundo.posicionVida.y) { // si la cabeza del P1 está sobre la comida
+        return make(mundo, {
+          posicionVida: generateFood(0, mundo.colisionX, 0, mundo.colisionY),
+          vidasP1: mundo.vidasP1 + 1,
+          puntajeP1: mundo.puntajeP1 + 10,
+          aparecerVida: false
+        });
+      }
+      return make(mundo, {});
+    } else {
+      return make(mundo, {});
+    }
+  }
+  function mostrarVida(mundo) { //cada 100 de puntaje, aparece la vida
+    if (mundo.puntajeP1 % 100 == 0) {
+      return make(mundo, { aparecerVida: true })
+    } else {
+      return make(mundo, {})
+    }
+  }
+  function expandirMundo(mundo) { //al llegar a un puntaje de 50 o mas, expande el mundo de juego(limites de colision y el fondo)
+    if (mundo.puntajeP1 >= 50) {
+      return make(mundo, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21 })
+    } else {
+      return make(mundo, {})
+    }
+  }
+  /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
+  *@param: object
+  *@return: object
+  */
+  function colisionP1(mundo) {
+    const cabezaP1 = first(mundo.snakeP1);
+    if (((cabezaP1).x >= 0 && cabezaP1.x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+    (cabezaP1.y >= 0 && cabezaP1.y <= mundo.colisionY)) {
+      return make(mundo, {})
+    } else {
+      if (mundo.vidasP1 == 0) {
+        return make(mundo, {direccionP1: {x: 0, y: 0}})
+      } else {
+        return make(mundo, {  //reinicia la culebra en el punto de partida
+          snakeP1: mundo.snakeOriginalP1,
+          direccionP1: { x: 1, y: 0 },
+          vidasP1: mundo.vidasP1 - 1,
+          velocidad: 5,
+          puntajeP1: 10,
+          posicionComida: generateFood(0, 20, 0, 20),
+          aparecerVida: false,
+          fondoX: 800, fondoY: 800,
+          colisionX: 19, colisionY: 19
+        })
+      }
+    }
+  }
+
+  function colisionP2(mundo) {
+    const cabezaP2 = first(mundo.snakeP2);
+    if (((cabezaP2).x >= 0 && cabezaP2.x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+    (cabezaP2.y >= 0 && cabezaP2.y <= mundo.colisionY)) {
+      return make(mundo, {})
+    } else {
+      if (mundo.vidasP2 == 0) {
+        return make(mundo, {direccionP2: {x: 0, y: 0}})
+      } else {
+        return make(mundo, {  //reinicia la culebra en el punto de partida
+          snakeP2: mundo.snakeOriginalP2,
+          direccionP2: { x: 1, y: 0 },
+          vidasP2: mundo.vidasP2 - 1,
+          velocidad: 5,
+          puntajeP2: 10,
+          posicionComida: generateFood(0, 20, 0, 20),
+          aparecerVida: false,
+          fondoX: 800, fondoY: 800,
+          colisionX: 19, colisionY: 19
+        })
+      }
+    }
+  }
+
+  /**toggleNitro: this function change the speed if is 5 change to 15 and vice versa
+  *@param: number
+  *@return: number
+  *@example: toggleNitro(5) -> 15
+  */
+  function toggleNitro(velocidad) {
+    if (velocidad == 5) {
+      return 10;
+    } else {
+      return 5;
+    }
+  }
+
+  //tamaño de los cuadros
+  const dx = 40;
+  const dy = 40;
+
+  function make(data, attribute) {
+    return Object.assign({}, data, attribute);
+  }
+
+  function sketchProc(processing) {
+    /**
+     * Esto se llama antes de iniciar el juego
+     */
+    processing.setup = function () {
+      processing.size(880, 880);
+      processing.background(255, 153, 255);
+      processing.state = {
+        snakeOriginalP1: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1, y: 4 }],
+        snakeP1: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1, y: 4 }],
+        direccionP1: { x: 1, y: 0 },
+        snakeOriginalP2: [{ x: 3, y: 6 }, { x: 2, y: 6 }, { x: 1, y: 6 }],
+        snakeP2: [{ x: 3, y: 6 }, { x: 2, y: 6 }, { x: 1, y: 6 }],
+        direccionP2: { x: 1, y: 0 },
+        posicionComida: { x: generateFood(0, 20, 0, 20).x, y: generateFood(0, 20, 0, 20).y },
+        posicionVida: { x: generateFood(0, 20, 0, 20).x, y: generateFood(0, 20, 0, 20).y },
+        velocidad: 5,
+        puntajeP1: 10,
+        puntajeP2: 10,
+        vidasP1: 3,
+        vidasP2: 3,
+        aparecerVida: false,
+        pausa: false,
+        colisionX: 19,
+        colisionY: 19,
+        fondoX: 800,
+        fondoY: 800
+      };
+      fondo1 = processing.loadImage('data/fondo/fondo1.png');
+      fondo2 = processing.loadImage('data/fondo/fondo2.jpg');
+      comida = processing.loadImage('data/comida/comida1.png');
+      vidas = processing.loadImage('data/especiales/God.png');
+      skin = processing.loadImage('data/skin/skin1.png')
+    }
+
+    // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
+    processing.drawGame = function (mundo) {
+      processing.background(255, 255, 255);
+      processing.image(mundo.vidasP1 == 0 ? fondo2 : fondo1, 0, 0, mundo.fondoX, mundo.fondoY); //pinta el fondo2 cuando tan solo tiene 1 vida
+
+      // Establece la velocidad
+      processing.frameRate(mundo.velocidad);
+
+      // Pinta la culebrita P1
+      apply(mundo.snakeP1, sP1 => {
+        processing.image(skin, sP1.x * dx, sP1.y * dy, dx, dy);
+      });
+
+      // Pinta la culebrita P2
+      apply(mundo.snakeP2, sP2 => {
+        processing.image(skin, sP2.x * dx, sP2.y * dy, dx, dy);
+      });
+
+      // Pinta la comida
+      processing.image(comida, mundo.posicionComida.x * dx, mundo.posicionComida.y * dy, dx, dy);
+
+      // Pinta el score
+      processing.fill(255, 255, 255);
+      processing.textFont(processing.PFont, 18);
+      processing.text("Score: " + mundo.puntajeP1, 10, 780);
+      processing.textFont(processing.PFont, 18);
+      processing.text("Vidas: " + mundo.vidasP1, 315, 780);
+
+      //Pinta las vidas adicionales
+      processing.image(mundo.aparecerVidas === true?vidas:0, mundo.posicionVida.x * dx, mundo.posicionVida.y * dy, dx, dy);
+    }
+      
+
+    // Esta es la función que pinta todo. Se ejecuta 60 veces por segundo. 
+    // No cambie esta función. Su código debe ir en drawGame
+    processing.draw = function () {
+      processing.drawGame(processing.state);
+      processing.state = processing.onTic(processing.state);
+    };
+
+    /**
+    * Actualiza el mundo en cada tic del reloj. Retorna el nuevo estado del mundo
+    */
+    processing.onTic = function (mundo) {
+      return expandirMundo(mostrarVida(colisionP2(colisionP1(comerVida(comerComida(make(moveSnake(mundo))))))));
+    }
+
+    /**
+    * Actualiza el mundo cada vez que se oprime una tecla. Retorna el nuevo estado del mundo
+    */
+    processing.onKeyEvent = function (mundo, tecla) {
+      switch (tecla) {
+        case processing.UP: //tecla 'arriba'
+          if ((mundo.direccionP1.x !== 0) && (mundo.direccionP1.y !== 1)) {
+            return make(mundo, { direccionP1: { y: -1, x: 0 } });
+          } else {
+            return make(mundo, {});
+          }
+          break;
+        case processing.DOWN: //tecla'abajo
+          if ((mundo.direccionP1.x !== 0) && (mundo.direccionP1.y !== -1)) {
+            return make(mundo, { direccionP1: { y: 1, x: 0 } });
+          } else {
+            return make(mundo, {});
+          }
+          break;
+        case processing.LEFT: //tecla 'izquierda'
+          if ((mundo.direccionP1.x !== 1) && (mundo.direccionP1.y !== 0)) {
+            return make(mundo, { direccionP1: { y: 0, x: -1 } });
+          } else {
+            return make(mundo, {});
+          }
+          break;
+        case processing.RIGHT: //tecla 'abajo'
+          if ((mundo.direccionP1.x !== -1) && (mundo.direccionP1.y !== 0)) {
+            return make(mundo, { direccionP1: { y: 0, x: 1 } });
+          } else {
+            return make(mundo, {});
+          }
+          break;
+        case 87:  // tecla 'w' = arriba
+          if ((mundo.direccionP2.x !== 0) && (mundo.direccionP2.y !== 1)) {
+            return make(mundo, { direccionP2: { y: -1, x: 0 } });
+          } else {
+            return make(mundo, {});
+          }
+          break;
+        case 83:  //tecla 's' = abajo
+          if ((mundo.direccionP2.x !== 0) && (mundo.direccionP2.y !== -1)) {
+            return make(mundo, { direccionP2: { y: 1, x: 0 } });
+          } else {
+            return make(mundo, {});
+          } break;
+        case 65:  //tecla 'a' = izquierda
+          if ((mundo.direccionP2.x !== 1) && (mundo.direccionP2.y !== 0)) {
+            return make(mundo, { direccionP2: { y: 0, x: -1 } });
+          } else {
+            return make(mundo, {});
+          } break;
+        case 68:  //tecla 'd' = derecha
+          if ((mundo.direccionP2.x !== -1) && (mundo.direccionP2.y !== 0)) {
+            return make(mundo, { direccionP2: { y: 0, x: 1 } });
+          } else {
+            return make(mundo, {})
+          } break;
+        case 32:  //tecla 'espacio' = turbo (cambio la velocidad)
+          return make(mundo, { velocidad: toggleNitro(mundo.velocidad) });
+          break;
+        case 80:  //tecla 'p' = pausa
+          if (mundo.pausa === false) {
+            return make(mundo, { pausa: true });
+          } else {
+            return make(mundo, { pausa: false })
+          }
+          break;
+        default:
+          console.log(tecla);
+          return make(mundo, {});
+      }
+    }
+
+    // Esta función se ejecuta cada vez que presionamos una tecla. 
+    // No cambie esta función. Su código debe ir en onKeyEvent
+    processing.keyPressed = function () {
+      processing.state = processing.onKeyEvent(processing.state, processing.keyCode);
+    }
+  }
+
+  var canvas = document.getElementById("canvas");
+
+  // Adjuntamos nuestro sketch al framework de processing
+  var processingInstance = new Processing(canvas, sketchProc);
+</script>
+<form>
+  <input value="Reload Page" onclick="history.go(0)" type="button">
+</form>
