@@ -15,9 +15,13 @@
     }
   }
 
-  function moveSnake(snake, dir) {
-    const head = first(snake);
-    return cons({ x: head.x + dir.x, y: head.y + dir.y }, snake.slice(0, length(snake) - 1));
+  function moveSnake(world) {
+    if (world.pause === false) {
+      const head = first(world.snake);
+      return make(world,{ snake: cons({ x: head.x + world.dir.x, y: head.y + world.dir.y }, world.snake.slice(0, length(world.snake) - 1))});
+    } else {
+      return make(world, {life: 0}); // make(world, {})
+    }
   }
 
   // Retorna un entero aleatorio entre min (incluido) y max (excluido)
@@ -68,13 +72,13 @@
       return make(world, {});
     }
   }
-function score(world){
-  if(world.score % 100 == 0){
-    return make(world,{l: true})
-  }else{
-    return make(world, {})
+  function score(world) {
+    if (world.score % 100 == 0) {
+      return make(world, { l: true })
+    } else {
+      return make(world, {})
+    }
   }
-}
   /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
   *@param: object
   *@return: object
@@ -127,7 +131,8 @@ function score(world){
         speed: 5,
         score: 10,
         vida: 3,
-        l: false
+        l: false,
+        pause: false
       };
       fondo = processing.loadImage('data/fondo/ground.png');
       comida = processing.loadImage('data/comida/food.png');
@@ -182,7 +187,7 @@ function score(world){
     * Actualiza el mundo en cada tic del reloj. Retorna el nuevo estado del mundo
     */
     processing.onTic = function (world) {
-      return score(collision(eatLife(eatFood(make(world, { snake: moveSnake(world.snake, world.dir) })))));
+      return score(collision(eatLife(eatFood(make(moveSnake(world) )))));
     }
 
     /**
@@ -246,6 +251,13 @@ function score(world){
         case 32: //Space
           return make(world, { speed: toggleNitro(world.speed) });
           break;
+          case 80:
+            if (world.pause === false){
+              return make(world, {pause: true});
+            }else{
+              return make(world, {pause: false})
+            }
+            break;
         default:
           console.log(keyCode);
           return make(world, {});
