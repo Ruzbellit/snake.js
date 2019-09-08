@@ -14,13 +14,15 @@
       apply(rest(a), f);
     }
   }
-
-  function moveSnake(world) {
-    if (world.pause === false) {
-      const head = first(world.snake);
-      return make(world, { snake: cons({ x: head.x + world.dir.x, y: head.y + world.dir.y }, world.snake.slice(0, length(world.snake) - 1)) });
+  /*
+  *
+  */
+  function moveSnake(mundo) {
+    if (mundo.pausa === false) {
+      const cabeza = first(mundo.snake);
+      return make(mundo, { snake: cons({ x: cabeza.x + mundo.direccion.x, y: cabeza.y + mundo.direccion.y }, mundo.snake.slice(0, length(mundo.snake) - 1)) });
     } else {
-      return make(world, { life: 0 }); // make(world, {})
+      return make(mundo, {});
     }
   }
 
@@ -33,8 +35,8 @@
    *@return: position 
    *@example: x: 13, y: 7
    */
-  function generateFood() {
-    return { x: getRandomInt(0, 20), y: getRandomInt(0, 20) };
+  function generateFood(minX, maxX, minY, maxY) {
+    return { x: getRandomInt(minX, maxX), y: getRandomInt(minY, maxY) };
   }
 
   /**eatFood this function verify if the food and the snake’s head are in the same position,
@@ -42,62 +44,71 @@
    *@param: object
    *@return object
    */
-  function eatFood(world) {
-    const head = first(world.snake);
-    if (head.x == world.food.x && head.y == world.food.y) {
-      // si la cabeza está sobre la comida
-      return make(world, {
-        snake: cons({ x: head.x + world.dir.x, y: head.y + world.dir.y }, world.snake),
-        food: generateFood(),
-        score: world.score + 10
+  function comerComida(mundo) {
+    const cabeza = first(mundo.snake);
+    if (cabeza.x == mundo.posicionComida.x && cabeza.y == mundo.posicionComida.y) { // si la cabeza está sobre la comida
+      return make(mundo, {
+        snake: cons({ x: cabeza.x + mundo.direccion.x, y: cabeza.y + mundo.direccion.y }, mundo.snake),
+        posicionComida: generateFood(0, mundo.colisionX, 0, mundo.colisionY),
+        puntaje: mundo.puntaje + 10
       });
     }
-    return make(world, {});
+    return make(mundo, {});
   }
 
-  function eatLife(world) {
-    if (world.l === true) {
-      const head = first(world.snake);
-      if (head.x == world.life.x && head.y == world.life.y) {
+  function comerVida(mundo) {
+    if (mundo.aparecerVida === true) {
+      const cabeza = first(mundo.snake);
+      if (cabeza.x == mundo.posicionVida.x && cabeza.y == mundo.posicionVida.y) {
         // si la cabeza está sobre la comida
-        return make(world, {
-          life: generateFood(),
-          vida: world.vida + 1,
-          score: world.score + 10,
-          l: false
+        return make(mundo, {
+          posicionVida: generateFood(0, mundo.colisionX, 0, mundo.colisionY),
+          vidas: mundo.vidas + 1,
+          puntaje: mundo.puntaje + 10,
+          aparecerVida: false
         });
       }
-      return make(world, {});
+      return make(mundo, {});
     } else {
-      return make(world, {});
+      return make(mundo, {});
     }
   }
-  function score(world) {
-    if (world.score % 100 == 0) {
-      return make(world, { l: true })
+  function mostrarVida(mundo) { //cada 100 de puntaje, aparece la vida
+    if (mundo.puntaje % 100 == 0) {
+      return make(mundo, { aparecerVida: true })
     } else {
-      return make(world, {})
+      return make(mundo, {})
     }
   }
-  function scorelevel(world){
-    if (world.score  >= 50) {
-      return make(world, { fondox: 1200, collisionx: 29 })
+  function expandirMundo(mundo) { //al llegar a un puntaje de 50 o mas, expande el mundo de juego(limites de colision y el fondo)
+    if (mundo.puntaje >= 50) {
+      return make(mundo, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21 })
     } else {
-      return make(world, {})
+      return make(mundo, {})
     }
   }
   /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
   *@param: object
   *@return: object
   */
-  function collision(world) {
-    if ((first(world.snake).x >= 0 && first(world.snake).x <= world.collisionx) && (first(world.snake).y >= 0 && first(world.snake).y <= world.collisiony)) {
-      return make(world, {})    //Limita el espacio de la serpientita, se muere y hace pum!
+  function colision(mundo) {
+    if ((first(mundo.snake).x >= 0 && first(mundo.snake).x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+      (first(mundo.snake).y >= 0 && first(mundo.snake).y <= mundo.colisionY)) { 
+      return make(mundo, {})
     } else {
-      if (world.vida == 0) {
+      if (mundo.vidas == 0) {
         alert("Game over")
       } else {
-        return make(world, { snake: world.snake1, dir: { x: 1, y: 0 }, vida: world.vida - 1, speed: 5, score: 10, food: generateFood() })
+        return make(mundo, {  //reinicia la culebra en el punto de partida
+          snake: mundo.snakeOriginal, direccion: { x: 1, y: 0 },
+          vidas: mundo.vidas - 1,
+          velocidad: 5,
+          puntaje: 10,
+          posicionComida: generateFood(0, 20, 0, 20),
+          aparecerVida: false,
+          fondoX: 800, fondoY: 800,
+          colisionX: 19, colisionY: 19
+        })
       }
     }
   }
@@ -107,15 +118,16 @@
   *@return: number
   *@example: toggleNitro(5) -> 15
   */
-  function toggleNitro(speed) {
-    if (speed == 5) {
+  function toggleNitro(velocidad) {
+    if (velocidad == 5) {
       return 10;
     } else {
       return 5;
     }
   }
 
-  const dx = 40;
+  //tamaño de los cuadros
+  const dx = 40; 
   const dy = 40;
 
   function make(data, attribute) {
@@ -127,59 +139,57 @@
      * Esto se llama antes de iniciar el juego
      */
     processing.setup = function () {
-      processing.size(1200, 800);
+      processing.size(880, 880);
       processing.background(255, 153, 255);
       processing.state = {
-        snake1: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
-        snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
-        dir: { x: 1, y: 0 },
-        food: { x: generateFood().x, y: generateFood().y },
-        life: { x: 10, y: 8 },
-        speed: 5,
-        score: 10,
-        vida: 3,
-        l: false,
-        pause: false,
-        collisionx: 19,
-        collisiony: 19,
-        fondox: 800,
-        fondoy: 800
+        snakeOriginal: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1, y: 4 }],
+        snake: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1 , y: 4 }],
+        direccion: { x: 1, y: 0 },
+        posicionComida: { x: generateFood(0, 20, 0, 20).x, y: generateFood(0, 20, 0, 20).y },
+        posicionVida: { x: generateFood(0, 20, 0, 20).x, y: generateFood(0, 20, 0, 20).y },
+        velocidad: 5,
+        puntaje: 10,
+        vidas: 3,
+        aparecerVida: false,
+        pausa: false,
+        colisionX: 19,
+        colisionY: 19,
+        fondoX: 800,
+        fondoY: 800
       };
-      fondo = processing.loadImage('data/fondo/ground.png');
-      comida = processing.loadImage('data/comida/food.png');
-      life = processing.loadImage('data/especiales/God.png');
-      skin = processing.loadImage('data/01.png')
+      fondo1 = processing.loadImage('data/fondo/fondo1.png');
+      fondo2 = processing.loadImage('data/fondo/fondo2.jpg');
+      comida = processing.loadImage('data/comida/comida1.png');
+      vidas = processing.loadImage('data/especiales/God.png');
+      skin = processing.loadImage('data/skin/skin1.png')
     }
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
-    processing.drawGame = function (world) {
+    processing.drawGame = function (mundo) {
       processing.background(255, 255, 255);
-      processing.image(fondo, 0, 0, world.fondox, world.fondoy);
+      processing.image(mundo.vidas == 0?fondo2:fondo1, 0, 0, mundo.fondoX, mundo.fondoY); //pinta el fondo2 cuando tan solo tiene 1 vida
 
       // Establece la velocidad
-      processing.frameRate(world.speed);
+      processing.frameRate(mundo.velocidad);
 
       // Pinta la culebrita
-      apply(world.snake, s => {
+      apply(mundo.snake, s => {
         processing.image(skin, s.x * dx, s.y * dy, dx, dy);
       });
 
-
       // Pinta la comida
-      processing.fill(204, 0, 255);
-      processing.image(comida, world.food.x * dx, world.food.y * dy, dx, dy);
+      processing.image(comida, mundo.posicionComida.x * dx, mundo.posicionComida.y * dy, dx, dy);
 
       // Pinta el score
-      processing.fill(0, 0, 0);
+      processing.fill(255, 255, 255);
       processing.textFont(processing.PFont, 18);
-      processing.text("Score: " + world.score, 10, 780);
+      processing.text("Score: " + mundo.puntaje, 10, 780);
       processing.textFont(processing.PFont, 18);
-      processing.text("Vidas: " + world.vida, 315, 780);
+      processing.text("Vidas: " + mundo.vidas, 315, 780);
 
       //Pinta las vidas adicionales
-
-      if (world.l == true) {
-        return processing.image(life, world.life.x * dx, world.life.y * dy, dx, dy);
+      if (mundo.aparecerVida === true) { //pinta la vida solo cuando 'aparecerVida' esta en 'true'
+        return processing.image(vidas, mundo.posicionVida.x * dx, mundo.posicionVida.y * dy, dx, dy);
       } else {
         return 0
       }
@@ -196,81 +206,81 @@
     /**
     * Actualiza el mundo en cada tic del reloj. Retorna el nuevo estado del mundo
     */
-    processing.onTic = function (world) {
-      return scorelevel(score(collision(eatLife(eatFood(make(moveSnake(world)))))));
+    processing.onTic = function (mundo) {
+      return expandirMundo(mostrarVida(colision(comerVida(comerComida(make(moveSnake(mundo)))))));
     }
 
     /**
     * Actualiza el mundo cada vez que se oprime una tecla. Retorna el nuevo estado del mundo
     */
-    processing.onKeyEvent = function (world, keyCode) {
-      switch (keyCode) {
-        case processing.UP:
-          if ((world.dir.x !== 0) && (world.dir.y !== 1)) {
-            return make(world, { dir: { y: -1, x: 0 } });
+    processing.onKeyEvent = function (mundo, tecla) {
+      switch (tecla) {
+        case processing.UP: //tecla 'arriba'
+          if ((mundo.direccion.x !== 0) && (mundo.direccion.y !== 1)) {
+            return make(mundo, { direccion: { y: -1, x: 0 } });
           } else {
-            return make(world, {});
+            return make(mundo, {});
           }
           break;
-        case processing.DOWN:
-          if ((world.dir.x !== 0) && (world.dir.y !== -1)) {
-            return make(world, { dir: { y: 1, x: 0 } });
+        case processing.DOWN: //tecla'abajo
+          if ((mundo.direccion.x !== 0) && (mundo.direccion.y !== -1)) {
+            return make(mundo, { direccion: { y: 1, x: 0 } });
           } else {
-            return make(world, {});
+            return make(mundo, {});
           }
           break;
-        case processing.LEFT:
-          if ((world.dir.x !== 1) && (world.dir.y !== 0)) {
-            return make(world, { dir: { y: 0, x: -1 } });
+        case processing.LEFT: //tecla 'izquierda'
+          if ((mundo.direccion.x !== 1) && (mundo.direccion.y !== 0)) {
+            return make(mundo, { direccion: { y: 0, x: -1 } });
           } else {
-            return make(world, {});
+            return make(mundo, {});
           }
           break;
-        case processing.RIGHT:
-          if ((world.dir.x !== -1) && (world.dir.y !== 0)) {
-            return make(world, { dir: { y: 0, x: 1 } });
+        case processing.RIGHT: //tecla 'abajo'
+          if ((mundo.direccion.x !== -1) && (mundo.direccion.y !== 0)) {
+            return make(mundo, { direccion: { y: 0, x: 1 } });
           } else {
-            return make(world, {});
+            return make(mundo, {});
           }
           break;
-        case 87:  //W
-          if ((world.dir.x !== 0) && (world.dir.y !== 1)) {
-            return make(world, { dir: { y: -1, x: 0 } });
+        case 87:  // tecla 'w' = arriba
+          if ((mundo.direccion.x !== 0) && (mundo.direccion.y !== 1)) {
+            return make(mundo, { direccion: { y: -1, x: 0 } });
           } else {
-            return make(world, {});
+            return make(mundo, {});
           }
           break;
-        case 83:  //S
-          if ((world.dir.x !== 0) && (world.dir.y !== -1)) {
-            return make(world, { dir: { y: 1, x: 0 } });
+        case 83:  //tecla 's' = abajo
+          if ((mundo.direccion.x !== 0) && (mundo.direccion.y !== -1)) {
+            return make(mundo, { direccion: { y: 1, x: 0 } });
           } else {
-            return make(world, {});
+            return make(mundo, {});
           } break;
-        case 65:  //A
-          if ((world.dir.x !== 1) && (world.dir.y !== 0)) {
-            return make(world, { dir: { y: 0, x: -1 } });
+        case 65:  //tecla 'a' = izquierda
+          if ((mundo.direccion.x !== 1) && (mundo.direccion.y !== 0)) {
+            return make(mundo, { direccion: { y: 0, x: -1 } });
           } else {
-            return make(world, {});
+            return make(mundo, {});
           } break;
-        case 68:  //D
-          if ((world.dir.x !== -1) && (world.dir.y !== 0)) {
-            return make(world, { dir: { y: 0, x: 1 } });
+        case 68:  //tecla 'd' = derecha
+          if ((mundo.direccion.x !== -1) && (mundo.direccion.y !== 0)) {
+            return make(mundo, { direccion: { y: 0, x: 1 } });
           } else {
-            return make(world, {})
+            return make(mundo, {})
           } break;
-        case 32: //Space
-          return make(world, { speed: toggleNitro(world.speed) });
+        case 32:  //tecla 'espacio' = turbo (cambio la velocidad)
+          return make(mundo, { velocidad: toggleNitro(mundo.velocidad) });
           break;
-        case 80:
-          if (world.pause === false) {
-            return make(world, { pause: true });
+        case 80:  //tecla 'p' = pausa
+          if (mundo.pausa === false) {
+            return make(mundo, { pausa: true });
           } else {
-            return make(world, { pause: false })
+            return make(mundo, { pausa: false })
           }
           break;
         default:
-          console.log(keyCode);
-          return make(world, {});
+          console.log(tecla);
+          return make(mundo, {});
       }
     }
 
@@ -286,3 +296,6 @@
   // Adjuntamos nuestro sketch al framework de processing
   var processingInstance = new Processing(canvas, sketchProc);
 </script>
+<form>
+  <input value="Reload Page" onclick="history.go(0)" type="button">
+</form>
