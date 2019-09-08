@@ -18,9 +18,9 @@
   function moveSnake(world) {
     if (world.pause === false) {
       const head = first(world.snake);
-      return make(world,{ snake: cons({ x: head.x + world.dir.x, y: head.y + world.dir.y }, world.snake.slice(0, length(world.snake) - 1))});
+      return make(world, { snake: cons({ x: head.x + world.dir.x, y: head.y + world.dir.y }, world.snake.slice(0, length(world.snake) - 1)) });
     } else {
-      return make(world, {life: 0}); // make(world, {})
+      return make(world, { life: 0 }); // make(world, {})
     }
   }
 
@@ -79,12 +79,19 @@
       return make(world, {})
     }
   }
+  function scorelevel(world){
+    if (world.score  >= 50) {
+      return make(world, { fondox: 1200, collisionx: 29 })
+    } else {
+      return make(world, {})
+    }
+  }
   /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
   *@param: object
   *@return: object
   */
   function collision(world) {
-    if ((first(world.snake).x >= 0 && first(world.snake).x <= 19) && (first(world.snake).y >= 0 && first(world.snake).y <= 19)) {
+    if ((first(world.snake).x >= 0 && first(world.snake).x <= world.collisionx) && (first(world.snake).y >= 0 && first(world.snake).y <= world.collisiony)) {
       return make(world, {})    //Limita el espacio de la serpientita, se muere y hace pum!
     } else {
       if (world.vida == 0) {
@@ -120,7 +127,7 @@
      * Esto se llama antes de iniciar el juego
      */
     processing.setup = function () {
-      processing.size(800, 800);
+      processing.size(1200, 800);
       processing.background(255, 153, 255);
       processing.state = {
         snake1: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
@@ -132,7 +139,11 @@
         score: 10,
         vida: 3,
         l: false,
-        pause: false
+        pause: false,
+        collisionx: 19,
+        collisiony: 19,
+        fondox: 800,
+        fondoy: 800
       };
       fondo = processing.loadImage('data/fondo/ground.png');
       comida = processing.loadImage('data/comida/food.png');
@@ -142,14 +153,13 @@
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
     processing.drawGame = function (world) {
-      processing.background(255, 153, 255);
-      processing.image(fondo, 0, 0, 800, 800);
+      processing.background(255, 255, 255);
+      processing.image(fondo, 0, 0, world.fondox, world.fondoy);
 
       // Establece la velocidad
       processing.frameRate(world.speed);
 
       // Pinta la culebrita
-      processing.fill(153, 204, 255);
       apply(world.snake, s => {
         processing.image(skin, s.x * dx, s.y * dy, dx, dy);
       });
@@ -187,7 +197,7 @@
     * Actualiza el mundo en cada tic del reloj. Retorna el nuevo estado del mundo
     */
     processing.onTic = function (world) {
-      return score(collision(eatLife(eatFood(make(moveSnake(world) )))));
+      return scorelevel(score(collision(eatLife(eatFood(make(moveSnake(world)))))));
     }
 
     /**
@@ -251,13 +261,13 @@
         case 32: //Space
           return make(world, { speed: toggleNitro(world.speed) });
           break;
-          case 80:
-            if (world.pause === false){
-              return make(world, {pause: true});
-            }else{
-              return make(world, {pause: false})
-            }
-            break;
+        case 80:
+          if (world.pause === false) {
+            return make(world, { pause: true });
+          } else {
+            return make(world, { pause: false })
+          }
+          break;
         default:
           console.log(keyCode);
           return make(world, {});
