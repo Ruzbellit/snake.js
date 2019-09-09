@@ -73,29 +73,10 @@
       return make(mundo, {});
     }
   }
-  function mostrarVida(mundo) { //cada 100 de puntaje, aparece la vida
-    if (mundo.puntaje % 100 == 0) {
-      return make(mundo, { aparecerVida: true })
-    } else {
-      return make(mundo, {})
-    }
-  }
-  function expandirMundo(mundo) { //al llegar a un puntaje de 50 o mas, expande el mundo de juego(limites de colision y el fondo)
-    if (mundo.puntaje >= 50) {
-      return make(mundo, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21 })
-    } else {
-      return make(mundo, {})
-    }
-  }
-  /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
-  *@param: object
-  *@return: object
-  */
-  function colision(mundo) {
-    if ((first(mundo.snake).x >= 0 && first(mundo.snake).x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
-      (first(mundo.snake).y >= 0 && first(mundo.snake).y <= mundo.colisionY)) { 
-      return make(mundo, {})
-    } else {
+
+  function comerObstaculo(mundo) {
+    const cabeza = first(mundo.snake);
+    if (cabeza.x == mundo.posicionObstaculo.x && cabeza.y == mundo.posicionObstaculo.y) { // si la cabeza está sobre el obstaculo
       if (mundo.vidas == 0) {
         alert("Game over")
       } else {
@@ -110,6 +91,99 @@
           colisionX: 19, colisionY: 19
         })
       }
+    } else {
+      return make(mundo, {})
+    }
+  }
+
+  function mostrarVida(mundo) { //cada 100 de puntaje, aparece la vida
+    if (mundo.puntaje % 100 == 0) {
+      return make(mundo, { aparecerVida: true })
+    } else {
+      return make(mundo, {})
+    }
+  }
+
+  //
+  function expandirMundo(mundo) { //al llegar a un puntaje de 50 o mas, expande el mundo de juego(limites de colision y el fondo)
+    if (mundo.puntaje >= 50) {    //cambia de nivel
+      return make(mundo, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21, nivel: mundo.nivel + 1 })
+    } else {
+      return make(mundo, {})
+    }
+  }
+
+  /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
+  *@param: object
+  *@return: object
+  */
+  function colision(mundo) {
+    if ((first(mundo.snake).x >= 0 && first(mundo.snake).x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+      (first(mundo.snake).y >= 0 && first(mundo.snake).y <= mundo.colisionY)) {
+      return make(mundo, {})
+    } else {
+      if (mundo.vidas == 0) {
+        return make(mundo, { gameOver: true })
+      } else {
+        return make(mundo, {  //reinicia la culebra en el punto de partida
+          snake: mundo.snakeOriginal, direccion: { x: 1, y: 0 },
+          vidas: mundo.vidas - 1,
+          velocidad: 5,
+          puntaje: 10,
+          posicionComida: generateFood(0, 20, 0, 20),
+          aparecerVida: false,
+          fondoX: 800, fondoY: 800,
+          colisionX: 19, colisionY: 19
+        })
+      }
+    }
+  }
+
+
+  function colisionSnake(mundo) {
+    const cabeza = first(mundo.snake);
+    const cuerpo = rest(mundo.snake);
+    function auxX(cabeza, cuerpo) {
+      if (cuerpo.length > 2) {
+        if (cabeza.x == first(cuerpo).x) {
+          return true
+        } else {
+          return auxX(cabeza, rest(cuerpo))
+        }
+      } else {
+        return cabeza.x == first(cuerpo).x
+      }
+    }
+
+    function auxY(cabeza, cuerpo) {
+      if (cuerpo.length > 2) {
+        if (cabeza.y == first(cuerpo).y) {
+          return true
+        } else {
+          return auxY(cabeza, rest(cuerpo))
+        }
+      } else {
+        return cabeza.y == first(cuerpo).y
+      }
+    }
+
+    if (auxX(cabeza, cuerpo) && auxY(cabeza, cuerpo)) {
+      if (mundo.vidas == 0) {
+        alert("Game over")
+      } else {
+        return make(mundo, {  //reinicia la culebra en el punto de partida
+          snake: mundo.snakeOriginal, direccion: { x: 1, y: 0 },
+          vidas: mundo.vidas - 1,
+          velocidad: 5,
+          puntaje: 10,
+          posicionComida: generateFood(0, 20, 0, 20),
+          aparecerVida: false,
+          fondoX: 800, fondoY: 800,
+          colisionX: 19, colisionY: 19
+        })
+      }
+    } else {
+      return make(mundo, {})
     }
   }
 
@@ -127,7 +201,7 @@
   }
 
   //tamaño de los cuadros
-  const dx = 40; 
+  const dx = 40;
   const dy = 40;
 
   function make(data, attribute) {
@@ -143,42 +217,93 @@
       processing.background(255, 153, 255);
       processing.state = {
         snakeOriginal: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1, y: 4 }],
-        snake: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1 , y: 4 }],
+        snake: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1, y: 4 }],
         direccion: { x: 1, y: 0 },
         posicionComida: { x: generateFood(0, 20, 0, 20).x, y: generateFood(0, 20, 0, 20).y },
         posicionVida: { x: generateFood(0, 20, 0, 20).x, y: generateFood(0, 20, 0, 20).y },
+        posicionObstaculo: { x: 10, y: 10 },
         velocidad: 5,
         puntaje: 10,
         vidas: 3,
         aparecerVida: false,
-        pausa: false,
+        pausa: true,
+        menu: true,
         colisionX: 19,
         colisionY: 19,
         fondoX: 800,
-        fondoY: 800
+        fondoY: 800,
+        nivel: 1,
+        gameOver: false
       };
-      fondo3 = processing.loadImage('data/fondo/fondo3.png');
-      fondo4 = processing.loadImage('data/fondo/fondo4.png');
+      fondoMenu = processing.loadImage('data/fondo/fondoMenu.jpg');
+      fondo1 = processing.loadImage('data/fondo/fondo1.png');
+      fondo2 = processing.loadImage('data/fondo/fondo2.png');
+      //fondo3 = processing.loadImage('data/fondo/fondo3.png');
+      //fondo4 = processing.loadImage('data/fondo/fondo4.png');
       comida = processing.loadImage('data/comida/comida1.png');
       vidas = processing.loadImage('data/especiales/God.png');
-      skin = processing.loadImage('data/skin/skin1.png')
+      cabezaArriba = processing.loadImage('data/skin/vampFrente.png');
+      cabezaAbajo = processing.loadImage('data/skin/vampAtras.png');
+      cabezaDerecha = processing.loadImage('data/skin/vampDerecha.png');
+      cabezaIzquierda = processing.loadImage('data/skin/vampIzquierda.png');
+      cuerpoArriba = processing.loadImage('data/skin/vampAtras.png');
+      cuerpoAbajo = processing.loadImage('data/skin/zombFrente.png');
+      cuerpoDerecha = processing.loadImage('data/skin/vampDerecha.png');
+      cuerpoIzquierda = processing.loadImage('data/skin/vampIzquierda.png');
+      obstaculo1 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      gameOver = processing.loadImage('data/fondo/gameOver.png');
     }
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
     processing.drawGame = function (mundo) {
       processing.background(255, 255, 255);
-      processing.image(mundo.vidas == 0?fondo4:fondo3, 0, 0, mundo.fondoX, mundo.fondoY); //pinta el fondo2 cuando tan solo tiene 1 vida
+
+
+      //Pinta el fondo en funcion al nivel
+      switch (mundo.nivel) {
+        case 1:
+          processing.image(fondo1, 0, 0, mundo.fondoX, mundo.fondoY);
+          break;
+        case 2:
+          processing.image(fondo2, 0, 0, mundo.fondoX, mundo.fondoY);
+          break;
+        default:
+          return 0
+      }
 
       // Establece la velocidad
       processing.frameRate(mundo.velocidad);
 
-      // Pinta la culebrita
-      apply(mundo.snake, s => {
-        processing.image(skin, s.x * dx, s.y * dy, dx, dy);
-      });
+      //Pinta el cuerpo de la culebra
+      if (mundo.menu === false) {
+        apply(rest(mundo.snake), s => {
+          if (mundo.direccion.x == 1) {
+            processing.image(mundo.direccion.x == 1 ? cuerpoDerecha : cuerpoIzquierda, s.x * dx, s.y * dy, dx, dy);
+          } else {
+            processing.image(mundo.direccion.y == 1 ? cuerpoAbajo : cuerpoArriba, s.x * dx, s.y * dy, dx, dy);
+          }
+        })
+      } else {
+        return 0
+      }
+
+      //Pinta la cabeza del vampiro
+      if (mundo.menu === false) {
+        const cabeza = first(mundo.snake)
+        if (mundo.direccion.x != 0) {
+          processing.image(mundo.direccion.x == 1 ? cabezaDerecha : cabezaIzquierda, cabeza.x * dx, cabeza.y * dy, dx, dy);
+        } else {
+          processing.image(mundo.direccion.y == 1 ? cabezaArriba : cabezaAbajo, cabeza.x * dx, cabeza.y * dy, dx, dy);
+        }
+      } else {
+        return 0
+      }
 
       // Pinta la comida
-      processing.image(comida, mundo.posicionComida.x * dx, mundo.posicionComida.y * dy, dx, dy);
+      processing.image(mundo.menu === false ? comida : 0, mundo.posicionComida.x * dx, mundo.posicionComida.y * dy, dx, dy);
+
+      //Pinta obstaculo 
+      processing.image(mundo.menu === false ? obstaculo1 : 0, mundo.posicionObstaculo.x * dx, mundo.posicionObstaculo.y * dy, dx, dy);
 
       // Pinta el score
       processing.fill(255, 255, 255);
@@ -193,8 +318,14 @@
       } else {
         return 0
       }
-    }
 
+      //Pinta el menu
+      //processing.image(mundo.menu === true ? fondoMenu : 0, 0, 0, mundo.fondoX, mundo.fondoY)
+      processing.image(mundo.menu ? fondoMenu : 0, 0, 0, mundo.fondoX, mundo.fondoY)
+
+      //Pinta el game over
+      processing.image(mundo.gameOver === true ? gameOver : 0, 0, 0, mundo.fondoX, mundo.fondoY);
+    }
 
     // Esta es la función que pinta todo. Se ejecuta 60 veces por segundo. 
     // No cambie esta función. Su código debe ir en drawGame
@@ -207,7 +338,7 @@
     * Actualiza el mundo en cada tic del reloj. Retorna el nuevo estado del mundo
     */
     processing.onTic = function (mundo) {
-      return expandirMundo(mostrarVida(colision(comerVida(comerComida(make(moveSnake(mundo)))))));
+      return expandirMundo(mostrarVida(colision(colisionSnake(comerVida(comerComida(comerObstaculo(make(moveSnake(mundo)))))))));
     }
 
     /**
@@ -277,6 +408,9 @@
           } else {
             return make(mundo, { pausa: false })
           }
+          break;
+        case 10:
+          return make(mundo, { menu: false, pausa: false });
           break;
         default:
           console.log(tecla);
