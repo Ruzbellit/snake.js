@@ -105,7 +105,7 @@
   }
   function expandirMundo(mundo) { //al llegar a un puntaje de 50 o mas, expande el mundo de juego(limites de colision y el fondo)
     if (mundo.puntaje >= 50) {
-      return make(mundo, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21 })
+      return make(mundo, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21, nivel: mundo.nivel + 1 })
     } else {
       return make(mundo, {})
     }
@@ -255,17 +255,15 @@
     processing.drawGame = function (mundo) {
       processing.background(255, 255, 255);
 
-      //Pinta el fondo el menú
-      processing.image(mundo.menu === true? fondoMenu : 0, 0, 0, mundo.fondoX, mundo.fondoY)
-      switch (mundo.nivel){
-        case 1 : processing.loadImage(fondo1, 0, 0, mundo.fondoX, mundo.fondoY);
-        break ;
-        case 2 : processing.loadImage(fondo2, 0, 0, mundo.fondoX, mundo.fondoY);
-        break ;
-        case 3 : processing.loadImage(fondo3, 0, 0, mundo.fondoX, mundo.fondoY);
-      } 
-      
-    
+      //Pinta el fondo del nivel
+      processing.image(mundo.nivel == 1 ? fondo1 : 0, 0, 0, mundo.fondoX, mundo.fondoY)
+      processing.image(mundo.nivel == 2 ? fondo2 : 0, 0, 0, mundo.fondoX, mundo.fondoY)
+      processing.image(mundo.nivel == 3 ? fondo3 : 0, 0, 0, mundo.fondoX, mundo.fondoY)
+
+
+      //Pinta el menu
+      processing.image(mundo.menu === true ? fondoMenu : 0, 0, 0, mundo.fondoX, mundo.fondoY)
+
 
       // Establece la velocidad
       processing.frameRate(mundo.velocidad);
