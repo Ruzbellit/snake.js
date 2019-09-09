@@ -157,8 +157,8 @@
         fondoX: 800,
         fondoY: 800
       };
-      fondo1 = processing.loadImage('data/fondo/fondo1.png');
-      fondo2 = processing.loadImage('data/fondo/fondo2.jpg');
+      fondo3 = processing.loadImage('data/fondo/fondo3.png');
+      fondo4 = processing.loadImage('data/fondo/fondo4.png');
       comida = processing.loadImage('data/comida/comida1.png');
       vidas = processing.loadImage('data/especiales/God.png');
       skin = processing.loadImage('data/skin/skin1.png')
@@ -167,7 +167,7 @@
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
     processing.drawGame = function (mundo) {
       processing.background(255, 255, 255);
-      processing.image(mundo.vidas == 0?fondo2:fondo1, 0, 0, mundo.fondoX, mundo.fondoY); //pinta el fondo2 cuando tan solo tiene 1 vida
+      processing.image(mundo.vidas == 0?fondo4:fondo3, 0, 0, mundo.fondoX, mundo.fondoY); //pinta el fondo2 cuando tan solo tiene 1 vida
 
       // Establece la velocidad
       processing.frameRate(mundo.velocidad);
