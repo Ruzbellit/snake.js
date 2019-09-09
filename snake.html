@@ -243,10 +243,10 @@
       cabezaAbajo = processing.loadImage('data/skin/vampAtras.png');
       cabezaDerecha = processing.loadImage('data/skin/vampDerecha.png');
       cabezaIzquierda = processing.loadImage('data/skin/vampIzquierda.png');
-      cuerpoArriba = processing.loadImage('data/skin/vampAtras.png');
+      cuerpoArriba = processing.loadImage('data/skin/zombAtras.png');
       cuerpoAbajo = processing.loadImage('data/skin/zombFrente.png');
-      cuerpoDerecha = processing.loadImage('data/skin/vampDerecha.png');
-      cuerpoIzquierda = processing.loadImage('data/skin/vampIzquierda.png');
+      cuerpoDerecha = processing.loadImage('data/skin/zombDerecha.png');
+      cuerpoIzquierda = processing.loadImage('data/skin/zombIzquierda.png');
       obstaculo1 = processing.loadImage('data/obstaculo/obstaculo1.png');
       gameOver = processing.loadImage('data/fondo/gameOver.png');
     }
@@ -266,15 +266,15 @@
       processing.frameRate(mundo.velocidad);
 
       //Pinta el cuerpo de la culebra
-      if (mundo.menu === false){
-      apply(rest(mundo.snake), s => {
-        if (mundo.direccion.x == 1) {
-          processing.image(mundo.direccion.x == 1 ? cuerpoDerecha : cuerpoIzquierda, s.x * dx, s.y * dy, dx, dy);
-        } else {
-          processing.image(mundo.direccion.y == 1 ? cuerpoAbajo : cuerpoArriba, s.x * dx, s.y * dy, dx, dy);
-        }
-      })
-      }else{
+      if (mundo.menu === false) {
+        apply(rest(mundo.snake), s => {
+          if (mundo.direccion.x != 0) {
+            processing.image(mundo.direccion.x == 1 ? cuerpoDerecha : cuerpoIzquierda, s.x * dx, s.y * dy, dx, dy);
+          } else {
+            processing.image(mundo.direccion.y == 1 ? cuerpoAbajo : cuerpoArriba, s.x * dx, s.y * dy, dx, dy);
+          }
+        })
+      } else {
         return 0
       }
 
@@ -286,7 +286,7 @@
         } else {
           processing.image(mundo.direccion.y == 1 ? cabezaArriba : cabezaAbajo, cabeza.x * dx, cabeza.y * dy, dx, dy);
         }
-      }else{
+      } else {
         return 0
       }
 
