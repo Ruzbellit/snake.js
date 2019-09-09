@@ -234,7 +234,7 @@
       };
       fondoMenu = processing.loadImage('data/fondo/fondoMenu.jpg');
       fondo1 = processing.loadImage('data/fondo/fondo1.png');
-      fondo2 = processing.loadImage('data/fondo/fondo2.png');
+      fondo2 = processing.loadImage('data/fondo/fondo3.png');
       //fondo3 = processing.loadImage('data/fondo/fondo3.png');
       // fondo4 = processing.loadImage('data/fondo/fondo4.png');
       comida = processing.loadImage('data/comida/comida1.png');
@@ -255,12 +255,17 @@
     processing.drawGame = function (mundo) {
       processing.background(255, 255, 255);
 
-      //Pinta el fondo en funcion a 
-      if (mundo.menu === false) {
-        processing.image(mundo.vidas == 0 ? fondo1 : fondo2, 0, 0, mundo.fondoX, mundo.fondoY); //pinta el fondo2 cuando tan solo tiene 1 vida
-      } else {
-        processing.image(fondoMenu, 0, 0, mundo.fondoX, mundo.fondoY)
-      }
+      //Pinta el fondo el menú
+      processing.image(mundo.menu === true? fondoMenu : 0, 0, 0, mundo.fondoX, mundo.fondoY)
+      switch (mundo.nivel){
+        case 1 : processing.loadImage(fondo1, 0, 0, mundo.fondoX, mundo.fondoY);
+        break ;
+        case 2 : processing.loadImage(fondo2, 0, 0, mundo.fondoX, mundo.fondoY);
+        break ;
+        case 3 : processing.loadImage(fondo3, 0, 0, mundo.fondoX, mundo.fondoY);
+      } 
+      
+    
 
       // Establece la velocidad
       processing.frameRate(mundo.velocidad);
