@@ -88,7 +88,7 @@
           posicionComida: generateFood(0, 20, 0, 20),
           aparecerVida: false,
           fondoX: 800, fondoY: 800,
-          colisionX: 19, colisionY: 19
+          colisionX: 18, colisionY: 18
         })
       }
     } else {
@@ -105,7 +105,7 @@
   }
   function expandirMundo(mundo) { //al llegar a un puntaje de 50 o mas, expande el mundo de juego(limites de colision y el fondo)
     if (mundo.puntaje >= 50) {
-      return make(mundo, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21, nivel: mundo.nivel + 1 })
+      return make(mundo, { fondoX: 1000, colisionX: 21, colisionY: 21, nivel: mundo.nivel + 1 })
     } else {
       return make(mundo, {})
     }
@@ -115,8 +115,8 @@
   *@return: object
   */
   function colision(mundo) {
-    if ((first(mundo.snake).x >= 0 && first(mundo.snake).x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
-      (first(mundo.snake).y >= 0 && first(mundo.snake).y <= mundo.colisionY)) {
+    if ((first(mundo.snake).x >= 1 && first(mundo.snake).x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+      (first(mundo.snake).y >= 1 && first(mundo.snake).y <= mundo.colisionY)) {
       return make(mundo, {})
     } else {
       if (mundo.vidas == 0) {
@@ -130,7 +130,7 @@
           posicionComida: generateFood(0, 20, 0, 20),
           aparecerVida: false,
           fondoX: 800, fondoY: 800,
-          colisionX: 19, colisionY: 19
+          colisionX: 18, colisionY: 18
         })
       }
     }
@@ -210,7 +210,7 @@
      * Esto se llama antes de iniciar el juego
      */
     processing.setup = function () {
-      processing.size(880, 880);
+      processing.size(800, 800);
       processing.background(255, 153, 255);
       processing.state = {
         snakeOriginal: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1, y: 4 }],
@@ -227,7 +227,7 @@
         menu: true,
         colisionX: 19,
         colisionY: 19,
-        fondoX: 800,
+        fondoX: 1000,
         fondoY: 800,
         nivel: 1,
         gameOver: false
