@@ -111,17 +111,9 @@
       return make(mundo, {})
     }
   }
-  /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
-  *@param: object
-  *@return: object
-  */
-  function colision(mundo) {
-    if ((first(mundo.snake).x >= 1 && first(mundo.snake).x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
-      (first(mundo.snake).y >= 1 && first(mundo.snake).y <= mundo.colisionY)) {
-      return make(mundo, {})
-    } else {
-      if (mundo.vidas == 0) {
-        return make(mundo, { gameOver: true, fondoX: 1200, pausa: true})
+  function bajarNivel(mundo){
+    if (mundo.vidas == 0) {
+        return make(mundo, { gameOver: true, fondoX: 1200, pausa: true })
       } else {
         return make(mundo, {  //reinicia la culebra en el punto de partida
           snake: mundo.snakeOriginal,
@@ -136,55 +128,28 @@
           nivel: 1
         })
       }
-    }
   }
-
-  //falla
-  function colisionSnake(mundo) {
-    const cabeza = first(mundo.snake);
-    const cuerpo = rest(mundo.snake);
-    function auxX(cabeza, cuerpo) {
-      if (cuerpo.length > 2) {
-        if (cabeza.x == first(cuerpo).x) {
-          return true
-        } else {
-          return auxX(cabeza, rest(cuerpo))
-        }
+  /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
+  *@param: object
+  *@return: object
+  */
+  function colision(mundo) {
+    if ((first(mundo.snake).x >= 1 && first(mundo.snake).x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+      (first(mundo.snake).y >= 1 && first(mundo.snake).y <= mundo.colisionY)) {
+      if (colisionCabeza(first(mundo.snake),rest(mundo.snake))){
+        return bajarNivel(mundo)
       } else {
-        return cabeza.x == first(cuerpo).x
-      }
-    }
-      //falla
-    function auxY(cabeza, cuerpo) {
-      if (cuerpo.length > 2) {
-        if (cabeza.y == first(cuerpo).y) {
-          return true
-        } else {
-          return auxY(cabeza, rest(cuerpo))
-        }
-      } else {
-        return cabeza.y == first(cuerpo).y
-      }
-    }
-      //falla
-    if (auxX(cabeza, cuerpo) && auxY(cabeza, cuerpo)) {
-      if (mundo.vidas == 0) {
-        alert("Game over")
-      } else {
-        return make(mundo, {  //reinicia la culebra en el punto de partida
-          snake: mundo.snakeOriginal, direccion: { x: 1, y: 0 },
-          vidas: mundo.vidas - 1,
-          velocidad: 5,
-          puntaje: 10,
-          posicionComida: generateFood(0, 20, 0, 20),
-          aparecerVida: false,
-          fondoX: 800, fondoY: 800,
-          colisionX: 18
-        })
+        return make(mundo, {})
       }
     } else {
-      return make(mundo, {})
+      return bajarNivel(mundo);
     }
+  }
+  // determina si hay colision entre la cabeza y el resto del cuerpo 
+  function colisionCabeza(cabeza, cuerpo){
+    return cuerpo.find(parte => {
+      return parte.x == cabeza.x && parte.y == cabeza.y
+    });
   }
 
   /**toggleNitro: this function change the speed if is 5 change to 15 and vice versa
