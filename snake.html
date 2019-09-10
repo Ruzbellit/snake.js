@@ -192,7 +192,7 @@
         lifes: 3,
         appearLife: false,
         pausa: true,
-        menu: 1,
+        menu: true,
         colisionX: 18,
         colisionY: 18,
         fondoX: 1200,
@@ -228,7 +228,7 @@
       //processing.image(world.level == 3 ? fondo3 : 0, 0, 0, world.fondoX, world.fondoY)
 
       //Pinta el menu
-      processing.image(world.menu == 1?fondoMenu: fondoMenu, 0, 0, world.fondoX, world.fondoY)
+      processing.image(world.menu === true?fondoMenu: 0, 0, 0, world.fondoX, world.fondoY)
 
 
       // Establece la speed
