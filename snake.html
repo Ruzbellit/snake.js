@@ -143,22 +143,24 @@
     }
   }
   function nextLevel(world) { //al llegar a un score de 50 o mas, expande el world de juego(limites de colision y el fondo)
-    if (world.score == 4) {
+    if (world.score == 10) {
       return make(world, {
         fondoX: 1000,
         colisionX: 23,
-        level: world.level + 1, snake: world.snakeOriginal,
+        level: world.level + 1,
+        snake: world.snakeOriginal,
         direction: { x: 1, y: 0 },
         speed: 5,
         score: world.score + 1,
         appearLife: false
       })
     } else {
-      if (world.score == 7) {
+      if (world.score == 20) {
         return make(world, {
           fondoX: 1200,
           colisionX: 28,
-          level: world.level + 1, snake: world.snakeOriginal,
+          level: world.level + 1,
+          snake: world.snakeOriginal,
           direction: { x: 1, y: 0 },
           speed: 5,
           score: world.score + 1,
@@ -265,7 +267,7 @@
         obstaclePosition21: { x: 21, y: 14 },
         speed: 5,
         score: 1,
-        lifes: 3,
+        lifes: 2,
         appearLife: false,
         pausa: true,
         menu: true,
@@ -371,18 +373,19 @@
         processing.image(world.menu === false ? obstaculo9 : 0, world.obstaclePosition9.x * dx, world.obstaclePosition9.y * dy, dx, dy);
         processing.image(world.menu === false ? obstaculo10 : 0, world.obstaclePosition10.x * dx, world.obstaclePosition10.y * dy, dx, dy);
         processing.image(world.menu === false ? obstaculo11 : 0, world.obstaclePosition11.x * dx, world.obstaclePosition11.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo12 : 0, world.obstaclePosition12.x * dx, world.obstaclePosition12.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo13 : 0, world.obstaclePosition13.x * dx, world.obstaclePosition13.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo14 : 0, world.obstaclePosition14.x * dx, world.obstaclePosition14.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo15 : 0, world.obstaclePosition15.x * dx, world.obstaclePosition15.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo16 : 0, world.obstaclePosition16.x * dx, world.obstaclePosition16.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo17 : 0, world.obstaclePosition17.x * dx, world.obstaclePosition17.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo18 : 0, world.obstaclePosition18.x * dx, world.obstaclePosition18.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo19 : 0, world.obstaclePosition19.x * dx, world.obstaclePosition19.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo20 : 0, world.obstaclePosition20.x * dx, world.obstaclePosition20.y * dy, dx, dy);
-        processing.image(world.menu === false ? obstaculo21 : 0, world.obstaclePosition21.x * dx, world.obstaclePosition21.y * dy, dx, dy);
+        if (world.level >= 3) {
+          processing.image(world.menu === false ? obstaculo12 : 0, world.obstaclePosition12.x * dx, world.obstaclePosition12.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo13 : 0, world.obstaclePosition13.x * dx, world.obstaclePosition13.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo14 : 0, world.obstaclePosition14.x * dx, world.obstaclePosition14.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo15 : 0, world.obstaclePosition15.x * dx, world.obstaclePosition15.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo16 : 0, world.obstaclePosition16.x * dx, world.obstaclePosition16.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo17 : 0, world.obstaclePosition17.x * dx, world.obstaclePosition17.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo18 : 0, world.obstaclePosition18.x * dx, world.obstaclePosition18.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo19 : 0, world.obstaclePosition19.x * dx, world.obstaclePosition19.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo20 : 0, world.obstaclePosition20.x * dx, world.obstaclePosition20.y * dy, dx, dy);
+          processing.image(world.menu === false ? obstaculo21 : 0, world.obstaclePosition21.x * dx, world.obstaclePosition21.y * dy, dx, dy);
+        }
       }
-
 
 
       // Pinta el score
