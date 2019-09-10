@@ -113,7 +113,7 @@
   }
   function bajarNivel(mundo){
     if (mundo.vidas == 0) {
-        return make(mundo, { gameOver: true, fondoX: 1200, pausa: true })
+        return make(mundo, { gameOver: true, fondoX: 1200, pausa: true, aparecerComida: false})
       } else {
         return make(mundo, {  //reinicia la culebra en el punto de partida
           snake: mundo.snakeOriginal,
