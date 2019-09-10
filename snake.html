@@ -114,10 +114,6 @@
     }
   }
 
-
-
-
-
   function showLife(world) { //cada 100 de score, aparece la vida
     if (world.score % 5 == 0) {
       return make(world, { appearLife: true })
@@ -127,8 +123,13 @@
   }
   function nextLevel(world) { //al llegar a un score de 50 o mas, expande el world de juego(limites de colision y el fondo)
     if (world.score == 5) {
-      return make(world, { fondoX: 1000 , colisionX: 22, level: world.level + 1,snake: world.snakeOriginal,
-          direction: { x: 1, y: 0 }, speed: 5 })
+      return make(world, { fondoX: 1000,
+      colisionX: 22,
+      level: world.level + 1,snake: world.snakeOriginal,
+      direction: { x: 1, y: 0 },
+      speed: 5,
+      score: world.score + 1
+      })
     } else {
       return make(world, {})
     }
@@ -235,9 +236,8 @@
       fondoMenu = processing.loadImage('data/fondo/fondoMenu.png');
       fondo1 = processing.loadImage('data/fondo/fondo1.png');
       fondo2 = processing.loadImage('data/fondo/fondo2.png');
-      //fondo3 = processing.loadImage('data/fondo/fondo3.png');
       food = processing.loadImage('data/comida/comida1.png');
-      lifes = processing.loadImage('data/especiales/God.png');
+      lifes = processing.loadImage('data/especiales/vidas.png');
       cabezaArriba = processing.loadImage('data/skin/vampFrente.png');
       cabezaAbajo = processing.loadImage('data/skin/vampAtras.png');
       cabezaDerecha = processing.loadImage('data/skin/vampDerecha.png');
