@@ -26,6 +26,26 @@
     }
   }
 
+  function foodObstacle(world) {
+    if (world.foodPosition.x == world.obstaclePosition1.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition2.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition3.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition4.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition5.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition6.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition7.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition8.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition9.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition10.x && world.foodPosition.y == world.obstaclePosition1.y ||
+      world.foodPosition.x == world.obstaclePosition11.x && world.foodPosition.y == world.obstaclePosition1.y) {
+      return make(world, {
+        foodPosition: generateFood(1, world.colisionX - 1, 1, world.colisionY - 1)
+      })
+    } else {
+      return make(world, {})
+    }
+  }
+
   // Retorna un entero aleatorio entre min (incluido) y max (excluido)
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
@@ -60,7 +80,7 @@
     if (world.appearLife === true) {
       const head = first(world.snake);
       if (head.x == world.lifePosition.x && head.y == world.lifePosition.y) {
-        // si la head está sobre la comida
+        // si la cabeza está sobre la comida
         return make(world, {
           lifePosition: generateFood(0, world.colisionX, 0, world.colisionY),
           lifes: world.lifes + 1,
@@ -76,81 +96,94 @@
 
   function hitObstacle(world) {
     const head = first(world.snake);
-    if ((head.x == world.obstaclePosition1.x && head.y == world.obstaclePosition1.y)||
-       (head.x == world.obstaclePosition2.x && head.y == world.obstaclePosition2.y)||
-       (head.x == world.obstaclePosition3.x && head.y == world.obstaclePosition3.y)||
-       (head.x == world.obstaclePosition4.x && head.y == world.obstaclePosition4.y)||
-       (head.x == world.obstaclePosition5.x && head.y == world.obstaclePosition5.y))
-        { // si la head está sobre el obstaculo
-      if (world.lifes == 0) {
-        return make (world, { gameOver : true, fondoX: 1200, pausa: true })
-      } else {
-        return make(world, {  //reinicia la culebra en el punto de partida
-          snake: world.snakeOriginal, direction: { x: 1, y: 0 },
-          lifes: world.lifes - 1,
-          speed: 5,
-          score: 1,
-          foodPosition: generateFood(1, world.colisionX - 1, 1, world.colisionY - 1),
-          appearLife: false,
-          fondoX: 800, fondoY: 800,
-          colisionX: 18,
-          level: 1
-        })
-      }
+    if ((head.x == world.obstaclePosition1.x && head.y == world.obstaclePosition1.y) ||
+      (head.x == world.obstaclePosition2.x && head.y == world.obstaclePosition2.y) ||
+      (head.x == world.obstaclePosition3.x && head.y == world.obstaclePosition3.y) ||
+      (head.x == world.obstaclePosition4.x && head.y == world.obstaclePosition4.y) ||
+      (head.x == world.obstaclePosition5.x && head.y == world.obstaclePosition5.y)) { // si la head está sobre el obstaculo
+      return downgradeLevel(world)
     }
-    if (world.level>2){
-      if((head.x == world.obstaclePosition6.x && head.y == world.obstaclePosition6.y)||
-       (head.x == world.obstaclePosition7.x && head.y == world.obstaclePosition7.y)||
-       (head.x == world.obstaclePosition8.x && head.y == world.obstaclePosition8.y)||
-       (head.x == world.obstaclePosition9.x && head.y == world.obstaclePosition9.y)||
-       (head.x == world.obstaclePosition10.x && head.y == world.obstaclePosition10.y)||
-       (head.x == world.obstaclePosition11.x && head.y == world.obstaclePosition11.y)){
+    if (world.level > 1) {
+      if ((head.x == world.obstaclePosition6.x && head.y == world.obstaclePosition6.y) ||
+        (head.x == world.obstaclePosition7.x && head.y == world.obstaclePosition7.y) ||
+        (head.x == world.obstaclePosition8.x && head.y == world.obstaclePosition8.y) ||
+        (head.x == world.obstaclePosition9.x && head.y == world.obstaclePosition9.y) ||
+        (head.x == world.obstaclePosition10.x && head.y == world.obstaclePosition10.y) ||
+        (head.x == world.obstaclePosition11.x && head.y == world.obstaclePosition11.y)) {
         return downgradeLevel(world)
-       }
-       else {return make(world,{})}
-       }
-    else {
+      } else {
+        if (world.level > 2) {
+          if ((head.x == world.obstaclePosition12.x && head.y == world.obstaclePosition12.y) ||
+            (head.x == world.obstaclePosition13.x && head.y == world.obstaclePosition13.y) ||
+            (head.x == world.obstaclePosition14.x && head.y == world.obstaclePosition14.y) ||
+            (head.x == world.obstaclePosition15.x && head.y == world.obstaclePosition15.y) ||
+            (head.x == world.obstaclePosition16.x && head.y == world.obstaclePosition16.y) ||
+            (head.x == world.obstaclePosition17.x && head.y == world.obstaclePosition17.y) ||
+            (head.x == world.obstaclePosition18.x && head.y == world.obstaclePosition18.y) ||
+            (head.x == world.obstaclePosition19.x && head.y == world.obstaclePosition19.y) ||
+            (head.x == world.obstaclePosition20.x && head.y == world.obstaclePosition20.y) ||
+            (head.x == world.obstaclePosition21.x && head.y == world.obstaclePosition21.y)) {
+            return downgradeLevel(world)
+          } else {
+            return make(world, {})
+          }
+        }
+        return make(world, {})
+      }
       return make(world, {})
     }
+    return make(world, {})
   }
 
   function showLife(world) { //cada 100 de score, aparece la vida
-    if (world.score % 5 == 0) {
+    if (world.score % 8 == 0) {
       return make(world, { appearLife: true })
     } else {
       return make(world, {})
     }
   }
   function nextLevel(world) { //al llegar a un score de 50 o mas, expande el world de juego(limites de colision y el fondo)
-    if (world.score == 5) {
-      return make(world, { fondoX: 1000,
-      colisionX: 22,
-      level: world.level + 1,snake: world.snakeOriginal,
-      direction: { x: 1, y: 0 },
-      speed: 5,
-      score: world.score + 1
+    if (world.score == 4) {
+      return make(world, {
+        fondoX: 1000,
+        colisionX: 23,
+        level: world.level + 1, snake: world.snakeOriginal,
+        direction: { x: 1, y: 0 },
+        speed: 5,
+        score: world.score + 1,
+        appearLife: false
       })
     } else {
-      return make(world, {})
+      if (world.score == 7) {
+        return make(world, {
+          fondoX: 1200,
+          colisionX: 28,
+          level: world.level + 1, snake: world.snakeOriginal,
+          direction: { x: 1, y: 0 },
+          speed: 5,
+          score: world.score + 1,
+          appearLife: false
+        })
+      } return make(world, {})
     }
   }
-  function downgradeLevel(world){
+  function downgradeLevel(world) {
     if (world.lifes == 0) {
-        return make(world, { gameOver: true, fondoX: 1200, pausa: true })
-      } else {
-        return make(world, {  //reinicia la culebra en el punto de partida
-          snake: world.snakeOriginal,
-          direction: { x: 1, y: 0 },
-          lifes: world.lifes - 1,
-          speed: 5,
-          score: 1,
-          foodPosition: generateFood(1, 17, 1, 17),
-          appearLife: false,
-          fondoX: 800, fondoY: 800,
-          colisionX: 18,
-          level: 1
-        })
-      }
+      return make(world, { gameOver: true, fondoX: 1200, pausa: true })
+    } else {
+      return make(world, {  //reinicia la culebra en el punto de partida
+        snake: world.snakeOriginal,
+        direction: { x: 1, y: 0 },
+        lifes: world.lifes - 1,
+        speed: 5,
+        score: 1,
+        foodPosition: generateFood(1, 17, 1, 17),
+        appearLife: false,
+        fondoX: 800, fondoY: 800,
+        colisionX: 18,
+        level: 1
+      })
+    }
   }
   /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
   *@param: object
@@ -159,7 +192,7 @@
   function colision(world) {
     if ((first(world.snake).x >= 1 && first(world.snake).x <= world.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
       (first(world.snake).y >= 1 && first(world.snake).y <= world.colisionY)) {
-      if (headCollision(first(world.snake),rest(world.snake))){
+      if (headCollision(first(world.snake), rest(world.snake))) {
         return downgradeLevel(world)
       } else {
         return make(world, {})
@@ -169,7 +202,7 @@
     }
   }
   // determina si hay colision entre la cabeza y el resto del cuerpo 
-  function headCollision(head, body){
+  function headCollision(head, body) {
     return body.find(part => {
       return part.x == head.x && part.y == head.y
     });
@@ -220,6 +253,16 @@
         obstaclePosition9: { x: 15, y: 12 },
         obstaclePosition10: { x: 15, y: 13 },
         obstaclePosition11: { x: 15, y: 14 },
+        obstaclePosition12: { x: 7, y: 8 },
+        obstaclePosition13: { x: 7, y: 10 },
+        obstaclePosition14: { x: 7, y: 12 },
+        obstaclePosition15: { x: 7, y: 14 },
+        obstaclePosition16: { x: 3, y: 6 },
+        obstaclePosition17: { x: 21, y: 10 },
+        obstaclePosition18: { x: 21, y: 8 },
+        obstaclePosition19: { x: 21, y: 10 },
+        obstaclePosition20: { x: 21, y: 12 },
+        obstaclePosition21: { x: 21, y: 14 },
         speed: 5,
         score: 1,
         lifes: 3,
@@ -236,6 +279,7 @@
       fondoMenu = processing.loadImage('data/fondo/fondoMenu.png');
       fondo1 = processing.loadImage('data/fondo/fondo1.png');
       fondo2 = processing.loadImage('data/fondo/fondo2.png');
+      fondo3 = processing.loadImage('data/fondo/fondo3.png');
       food = processing.loadImage('data/comida/comida1.png');
       lifes = processing.loadImage('data/especiales/vidas.png');
       cabezaArriba = processing.loadImage('data/skin/vampFrente.png');
@@ -257,6 +301,17 @@
       obstaculo9 = processing.loadImage('data/obstaculo/obstaculo2.png');
       obstaculo10 = processing.loadImage('data/obstaculo/obstaculo2.png');
       obstaculo11 = processing.loadImage('data/obstaculo/obstaculo2.png');
+      obstaculo12 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo13 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo14 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo15 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo16 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo17 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo18 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo19 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo20 = processing.loadImage('data/obstaculo/obstaculo1.png');
+      obstaculo21 = processing.loadImage('data/obstaculo/obstaculo1.png');
+
       gameOver = processing.loadImage('data/fondo/gameOver.png');
     }
 
@@ -265,13 +320,12 @@
       processing.background(255, 255, 255);
 
       //Pinta el fondo del level
-      processing.image(world.level == 1 ? fondo1 : fondo2, 0, 0, world.fondoX, world.fondoY)
-      //processing.image(world.level == 2 ? fondo2 : 0, 0, 0, world.fondoX, world.fondoY)
-      //processing.image(world.level == 3 ? fondo3 : 0, 0, 0, world.fondoX, world.fondoY)
+      processing.image(world.level == 1 ? fondo1 : 0, 0, 0, world.fondoX, world.fondoY)
+      processing.image(world.level == 2 ? fondo2 : 0, 0, 0, world.fondoX, world.fondoY)
+      processing.image(world.level == 3 ? fondo3 : 0, 0, 0, world.fondoX, world.fondoY)
 
       //Pinta el menu
       processing.image(world.menu === true ? fondoMenu : 0, 0, 0, world.fondoX, world.fondoY)
-
 
       // Establece la speed
       processing.frameRate(world.speed);
@@ -310,15 +364,27 @@
       processing.image(world.menu === false ? obstaculo3 : 0, world.obstaclePosition3.x * dx, world.obstaclePosition3.y * dy, dx, dy);
       processing.image(world.menu === false ? obstaculo4 : 0, world.obstaclePosition4.x * dx, world.obstaclePosition4.y * dy, dx, dy);
       processing.image(world.menu === false ? obstaculo5 : 0, world.obstaclePosition5.x * dx, world.obstaclePosition5.y * dy, dx, dy);
-      if(world.level>=2){
+      if (world.level >= 2) {
         processing.image(world.menu === false ? obstaculo6 : 0, world.obstaclePosition6.x * dx, world.obstaclePosition6.y * dy, dx, dy);
         processing.image(world.menu === false ? obstaculo7 : 0, world.obstaclePosition7.x * dx, world.obstaclePosition7.y * dy, dx, dy);
         processing.image(world.menu === false ? obstaculo8 : 0, world.obstaclePosition8.x * dx, world.obstaclePosition8.y * dy, dx, dy);
         processing.image(world.menu === false ? obstaculo9 : 0, world.obstaclePosition9.x * dx, world.obstaclePosition9.y * dy, dx, dy);
         processing.image(world.menu === false ? obstaculo10 : 0, world.obstaclePosition10.x * dx, world.obstaclePosition10.y * dy, dx, dy);
-       processing.image(world.menu === false ? obstaculo11 : 0, world.obstaclePosition11.x * dx, world.obstaclePosition11.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo11 : 0, world.obstaclePosition11.x * dx, world.obstaclePosition11.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo12 : 0, world.obstaclePosition12.x * dx, world.obstaclePosition12.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo13 : 0, world.obstaclePosition13.x * dx, world.obstaclePosition13.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo14 : 0, world.obstaclePosition14.x * dx, world.obstaclePosition14.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo15 : 0, world.obstaclePosition15.x * dx, world.obstaclePosition15.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo16 : 0, world.obstaclePosition16.x * dx, world.obstaclePosition16.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo17 : 0, world.obstaclePosition17.x * dx, world.obstaclePosition17.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo18 : 0, world.obstaclePosition18.x * dx, world.obstaclePosition18.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo19 : 0, world.obstaclePosition19.x * dx, world.obstaclePosition19.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo20 : 0, world.obstaclePosition20.x * dx, world.obstaclePosition20.y * dy, dx, dy);
+        processing.image(world.menu === false ? obstaculo21 : 0, world.obstaclePosition21.x * dx, world.obstaclePosition21.y * dy, dx, dy);
       }
-      
+
+
+
       // Pinta el score
       processing.fill(0, 0, 0);
       processing.textFont(processing.PFont, 32);
@@ -330,9 +396,9 @@
       processing.image(world.gameOver === true ? gameOver : 0, 0, 0, world.fondoX, world.fondoY);
 
       //Pinta las lifes adicionales
-      processing.image(world.appearLife === true? lifes: 0, world.lifePosition.x * dx, world.lifePosition.y * dy, dx, dy);
+      processing.image(world.appearLife === true ? lifes : 0, world.lifePosition.x * dx, world.lifePosition.y * dy, dx, dy);
     }
-    
+
 
     // Esta es la función que pinta todo. Se ejecuta 60 veces por segundo. 
     // No cambie esta función. Su código debe ir en drawGame
@@ -345,7 +411,7 @@
     * Actualiza el world en cada tic del reloj. Retorna el nuevo estado del world
     */
     processing.onTic = function (world) {
-      return nextLevel(showLife(colision(eatLife(eatFood(hitObstacle(make(moveSnake(world)))))))) ;
+      return nextLevel(showLife(colision(foodObstacle(eatLife(eatFood(hitObstacle(make(moveSnake(world)))))))));
     }
 
     /**
