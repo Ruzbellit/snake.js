@@ -127,7 +127,8 @@
   }
   function nextLevel(world) { //al llegar a un score de 50 o mas, expande el world de juego(limites de colision y el fondo)
     if (world.score == 5) {
-      return make(world, { fondoX: 1000 , colisionX: 22, level: world.level + 1 })
+      return make(world, { fondoX: 1000 , colisionX: 22, level: world.level + 1,snake: world.snakeOriginal,
+          direction: { x: 1, y: 0 }, speed: 5 })
     } else {
       return make(world, {})
     }
