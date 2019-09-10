@@ -78,7 +78,7 @@
     const head = first(world.snake);
     if (head.x == world.obstaclePosition.x && head.y == world.obstaclePosition.y) { // si la head está sobre el obstaculo
       if (world.lifes == 0) {
-        make (world, { gameOver : true, fondoX: 1200, pausa: true })
+        make(world, { gameOver: true, fondoX: 1200, pausa: true })
       } else {
         return make(world, {  //reinicia la culebra en el punto de partida
           snake: world.snakeOriginal, direction: { x: 1, y: 0 },
@@ -106,28 +106,28 @@
   }
   function nextLevel(world) { //al llegar a un score de 50 o mas, expande el world de juego(limites de colision y el fondo)
     if (world.score == 5) {
-      return make(world, { fondoX: 1000 , colisionX: 22, level: world.level + 1 })
+      return make(world, { fondoX: 1000, colisionX: 22, level: world.level + 1 })
     } else {
       return make(world, {})
     }
   }
-  function downgradeLevel(world){
+  function downgradeLevel(world) {
     if (world.lifes == 0) {
-        return make(world, { gameOver: true, fondoX: 1200, pausa: true })
-      } else {
-        return make(world, {  //reinicia la culebra en el punto de partida
-          snake: world.snakeOriginal,
-          direction: { x: 1, y: 0 },
-          lifes: world.lifes - 1,
-          speed: 5,
-          score: 1,
-          foodPosition: generateFood(1, 17, 1, 17),
-          appearLife: false,
-          fondoX: 800, fondoY: 800,
-          colisionX: 18,
-          level: 1
-        })
-      }
+      return make(world, { gameOver: true, fondoX: 1200, pausa: true })
+    } else {
+      return make(world, {  //reinicia la culebra en el punto de partida
+        snake: world.snakeOriginal,
+        direction: { x: 1, y: 0 },
+        lifes: world.lifes - 1,
+        speed: 5,
+        score: 1,
+        foodPosition: generateFood(1, 17, 1, 17),
+        appearLife: false,
+        fondoX: 800, fondoY: 800,
+        colisionX: 18,
+        level: 1
+      })
+    }
   }
   /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
   *@param: object
@@ -136,7 +136,7 @@
   function colision(world) {
     if ((first(world.snake).x >= 1 && first(world.snake).x <= world.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
       (first(world.snake).y >= 1 && first(world.snake).y <= world.colisionY)) {
-      if (headCollision(first(world.snake),rest(world.snake))){
+      if (headCollision(first(world.snake), rest(world.snake))) {
         return downgradeLevel(world)
       } else {
         return make(world, {})
@@ -146,7 +146,7 @@
     }
   }
   // determina si hay colision entre la cabeza y el resto del cuerpo 
-  function headCollision(head, body){
+  function headCollision(head, body) {
     return body.find(part => {
       return part.x == head.x && part.y == head.y
     });
@@ -192,7 +192,7 @@
         lifes: 3,
         appearLife: false,
         pausa: true,
-        menu: true,
+        menu: 1,
         colisionX: 18,
         colisionY: 18,
         fondoX: 1200,
@@ -228,7 +228,8 @@
       //processing.image(world.level == 3 ? fondo3 : 0, 0, 0, world.fondoX, world.fondoY)
 
       //Pinta el menu
-      processing.image(world.menu === true ? fondoMenu : 0, 0, 0, world.fondoX, world.fondoY)
+      processing.image(world.menu == 1?fondoMenu: fondoMenu, 0, 0, world.fondoX, world.fondoY)
+
 
       // Establece la speed
       processing.frameRate(world.speed);
@@ -275,9 +276,9 @@
       processing.image(world.gameOver === true ? gameOver : 0, 0, 0, world.fondoX, world.fondoY);
 
       //Pinta las lifes adicionales
-      processing.image(world.appearLife === true? lifes: 0, world.lifePosition.x * dx, world.lifePosition.y * dy, dx, dy);
+      processing.image(world.appearLife === true ? lifes : 0, world.lifePosition.x * dx, world.lifePosition.y * dy, dx, dy);
     }
-    
+
 
     // Esta es la función que pinta todo. Se ejecuta 60 veces por segundo. 
     // No cambie esta función. Su código debe ir en drawGame
@@ -290,7 +291,7 @@
     * Actualiza el world en cada tic del reloj. Retorna el nuevo estado del world
     */
     processing.onTic = function (world) {
-      return nextLevel(showLife(colision(eatLife(eatFood(hitObstacle(make(moveSnake(world)))))))) ;
+      return nextLevel(showLife(colision(eatLife(eatFood(hitObstacle(make(moveSnake(world))))))));
     }
 
     /**
