@@ -78,7 +78,7 @@
     const cabeza = first(mundo.snake);
     if (cabeza.x == mundo.posicionObstaculo.x && cabeza.y == mundo.posicionObstaculo.y) { // si la cabeza está sobre el obstaculo
       if (mundo.vidas == 0) {
-        make (world, { gameOver : true, fondoX: 1200})
+        make (world, { gameOver : true, fondoX: 1200, pausa: true })
       } else {
         return make(mundo, {  //reinicia la culebra en el punto de partida
           snake: mundo.snakeOriginal, direccion: { x: 1, y: 0 },
@@ -121,7 +121,7 @@
       return make(mundo, {})
     } else {
       if (mundo.vidas == 0) {
-        return make(mundo, { gameOver: true, fondoX: 1200 })
+        return make(mundo, { gameOver: true, fondoX: 1200, pausa: true})
       } else {
         return make(mundo, {  //reinicia la culebra en el punto de partida
           snake: mundo.snakeOriginal,
@@ -301,7 +301,7 @@
       processing.image(mundo.menu === false ? obstaculo1 : 0, mundo.posicionObstaculo.x * dx, mundo.posicionObstaculo.y * dy, dx, dy);
 
       // Pinta el score
-      processing.fill(255, 255, 255);
+      processing.fill(0, 0, 0);
       processing.textFont(processing.PFont, 18);
       processing.text("Score: " + mundo.puntaje, 10, 780);
       processing.textFont(processing.PFont, 18);
