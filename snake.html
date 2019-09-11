@@ -26,6 +26,7 @@
     }
   }
 
+
   function foodObstacle(world) {
     if (world.foodPosition.x == world.obstaclePosition1.x && world.foodPosition.y == world.obstaclePosition1.y ||
       world.foodPosition.x == world.obstaclePosition2.x && world.foodPosition.y == world.obstaclePosition2.y ||
@@ -109,7 +110,7 @@
     }
   }
 
-  /**hitObstacle: this function verify if the snake’s head are in the same position of some ,
+  /**hitObstacle: this function verify if the snake’s head are in the same position of some obstacle,
      *@param: object
      *@return object
      */
@@ -154,13 +155,15 @@
     return make(world, {})
   }
 
-  function showLife(world) { //cada 100 de score, aparece la vida
+  function showLife(world) { //cada 8 de score, aparece la vida
     if (world.score % 8 == 0) {
       return make(world, { appearLife: true })
     } else {
       return make(world, {})
     }
   }
+
+
   function nextLevel(world) { //al llegar a un score de 50 o mas, expande el world de juego(limites de colision y el fondo)
     if (world.score == 10) {
       return make(world, {
@@ -188,6 +191,8 @@
       } return make(world, {})
     }
   }
+
+
   function downgradeLevel(world) {
     if (world.lifes == 0) {
       return make(world, { gameOver: true, fondoX: 1200, pausa: true })
@@ -375,7 +380,7 @@
         return 0
       }
 
-      // Pinta la comida
+      //Pinta la comida
       processing.image(world.menu === false ? food : 0, world.foodPosition.x * dx, world.foodPosition.y * dy, dx, dy);
 
       //Pinta obstaculo 
@@ -405,7 +410,7 @@
         }
       }
 
-      // Pinta el score
+      //Pinta el score
       processing.fill(0, 0, 0);
       processing.textFont(processing.PFont, 32);
       processing.text("SCORE: " + world.score, 40, 750);
