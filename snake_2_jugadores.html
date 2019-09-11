@@ -17,14 +17,14 @@
   /*
   *
   */
-  function moveSnake(mundo) {
-    if (mundo.pausa === false) {
-      return make(mundo, {
-        snakeP1: cons({ x: first(mundo.snakeP1).x + mundo.directionP1.x, y: first(mundo.snakeP1).y + mundo.directionP1.y }, mundo.snakeP1.slice(0, length(mundo.snakeP1) - 1)),
-        snakeP2: cons({ x: first(mundo.snakeP2).x + mundo.directionP2.x, y: first(mundo.snakeP2).y + mundo.directionP2.y }, mundo.snakeP2.slice(0, length(mundo.snakeP2) - 1))
+  function moveSnake(world) {
+    if (world.pausa === false) {
+      return make(world, {
+        snakeP1: cons({ x: first(world.snakeP1).x + world.directionP1.x, y: first(world.snakeP1).y + world.directionP1.y }, world.snakeP1.slice(0, length(world.snakeP1) - 1)),
+        snakeP2: cons({ x: first(world.snakeP2).x + world.directionP2.x, y: first(world.snakeP2).y + world.directionP2.y }, world.snakeP2.slice(0, length(world.snakeP2) - 1))
       });
     } else {
-      return make(mundo, {});
+      return make(world, {});
     }
   }
 
@@ -46,78 +46,78 @@
    *@param: object
    *@return object
    */
-  function comerComida(mundo) {
-    const headP1 = first(mundo.snakeP1);
-    if (headP1.x == mundo.foodPosition.x && headP1.y == mundo.foodPosition.y) { // si la cabeza del P1 está sobre la comida
-      return make(mundo, {
-        snakeP1: cons({ x: headP1.x + mundo.directionP1.x, y: headP1.y + mundo.directionP1.y }, mundo.snakeP1),
-        appearLife: generateFood(0, mundo.colisionX, 0, mundo.colisionY),
-        scoreP1: mundo.scoreP1 + 10
+  function comerComida(world) {
+    const headP1 = first(world.snakeP1);
+    if (headP1.x == world.foodPosition.x && headP1.y == world.foodPosition.y) { // si la cabeza del P1 está sobre la comida
+      return make(world, {
+        snakeP1: cons({ x: headP1.x + world.directionP1.x, y: headP1.y + world.directionP1.y }, world.snakeP1),
+        appearLife: generateFood(0, world.colisionX, 0, world.colisionY),
+        scoreP1: world.scoreP1 + 10
       });
     } else {
-      const headP2 = first(mundo.snakeP2);
-      if (headP2.x == mundo.foodPosition.x && headP2.y == mundo.foodPosition.y) {  // si la cabeza del P2 está sobre la comida
-        return make(mundo, {
-          snakeP2: cons({ x: headP2.x + mundo.directinoP2.x, y: headP2.y + mundo.directionP2.y }, mundo.snakeP2),
-          foodPosition: generateFood(0, mundo.colisionX, 0, mundo.colisionY),
-          scoreP2: mundo.scoreP2 + 10
+      const headP2 = first(world.snakeP2);
+      if (headP2.x == world.foodPosition.x && headP2.y == world.foodPosition.y) {  // si la cabeza del P2 está sobre la comida
+        return make(world, {
+          snakeP2: cons({ x: headP2.x + world.directionP2.x, y: headP2.y + world.directionP2.y }, world.snakeP2),
+          foodPosition: generateFood(0, world.colisionX, 0, world.colisionY),
+          scoreP2: world.scoreP2 + 10
         });
       } else {
-        return make(mundo, {});
+        return make(world, {});
       }
     }
   }
 
-  function comerVida(mundo) {
-    if (mundo.appearLife === true) {
-      const headP1 = first(mundo.snakeP1);
-      if (headP1.x == mundo.appearLife.x && headP1.y == mundo.appearLife.y) { // si la cabeza del P1 está sobre la comida
-        return make(mundo, {
-          appearLife: generateFood(0, mundo.colisionX, 0, mundo.colisionY),
-          lifesP1: mundo.lifesP1 + 1,
-          scoreP1: mundo.scoreP1 + 10,
+  function comerVida(world) {
+    if (world.appearLife === true) {
+      const headP1 = first(world.snakeP1);
+      if (headP1.x == world.appearLife.x && headP1.y == world.appearLife.y) { // si la cabeza del P1 está sobre la comida
+        return make(world, {
+          appearLife: generateFood(0, world.colisionX, 0, world.colisionY),
+          lifesP1: world.lifesP1 + 1,
+          scoreP1: world.scoreP1 + 10,
           appearLife: false
         });
       }
-      return make(mundo, {});
+      return make(world, {});
     } else {
-      return make(mundo, {});
+      return make(world, {});
     }
   }
-  function mostrarVida(mundo) { //cada 100 de puntaje, aparece la vida
-    if (mundo.scoreP1 % 100 == 0) {
-      return make(mundo, { appearLife: true })
+  function mostrarVida(world) { //cada 100 de puntaje, aparece la vida
+    if (world.scoreP1 % 100 == 0) {
+      return make(world, { appearLife: true })
     } else {
-      return make(mundo, {})
+      return make(world, {})
     }
   }
-  function expandirMundo(mundo) { //al llegar a un puntaje de 50 o mas, expande el mundo de juego(limites de colision y el fondo)
-    if (mundo.scoreP1 >= 50) {
-      return make(mundo, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21 })
+  function expandirMundo(world) { //al llegar a un puntaje de 50 o mas, expande el world de juego(limites de colision y el fondo)
+    if (world.scoreP1 >= 50) {
+      return make(world, { fondoX: 880, fondoY: 880, colisionX: 21, colisionY: 21 })
     } else {
-      return make(mundo, {})
+      return make(world, {})
     }
   }
   /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
   *@param: object
   *@return: object
   */
-  function colisionP1(mundo) {
-    const headP1 = first(mundo.snakeP1);
-    if (((headP1).x >= 0 && headP1.x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
-      (headP1.y >= 0 && headP1.y <= mundo.colisionY)) {
-      return make(mundo, {})
+  function colisionP1(world) {
+    const headP1 = first(world.snakeP1);
+    if (((headP1).x >= 0 && headP1.x <= world.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+      (headP1.y >= 0 && headP1.y <= world.colisionY)) {
+      return make(world, {})
     } else {
-      if (mundo.lifesP1 == 0) {
-        return make(mundo, { directionP1: { x: 0, y: 0 } })
+      if (world.lifesP1 == 0) {
+        return make(world, { directionP1: { x: 0, y: 0 } })
       } else {
-        return make(mundo, {  //reinicia la culebra en el punto de partida
-          snakeP1: mundo.snakeOriginalP1,
+        return make(world, {  //reinicia la culebra en el punto de partida
+          snakeP1: world.snakeOriginalP1,
           directionP1: { x: 1, y: 0 },
-          lifesP1: mundo.lifesP1 - 1,
+          lifesP1: world.lifesP1 - 1,
           speed: 5,
           scoreP1: 10,
-          foodPosition: generateFood(1, mundo.colisionX - 1, 1, mundo.colisionY - 1),
+          foodPosition: generateFood(1, world.colisionX - 1, 1, world.colisionY - 1),
           appearLife: false,
           fondoX: 800, fondoY: 800,
           colisionX: 19, colisionY: 19
@@ -126,22 +126,22 @@
     }
   }
 
-  function colisionP2(mundo) {
-    const headP2 = first(mundo.snakeP2);
-    if (((headP2).x >= 1 && headP2.x <= mundo.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
-      (headP2.y >= 1 && headP2.y <= mundo.colisionY)) {
-      return make(mundo, {})
+  function colisionP2(world) {
+    const headP2 = first(world.snakeP2);
+    if (((headP2).x >= 1 && headP2.x <= world.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+      (headP2.y >= 1 && headP2.y <= world.colisionY)) {
+      return make(world, {})
     } else {
-      if (mundo.lifesP2 == 0) {
-        return make(mundo, { direccionP2: { x: 0, y: 0 } })
+      if (world.lifesP2 == 0) {
+        return make(world, { direccionP2: { x: 0, y: 0 } })
       } else {
-        return make(mundo, {  //reinicia la culebra en el punto de partida
-          snakeP2: mundo.snakeOriginalP2,
+        return make(world, {  //reinicia la culebra en el punto de partida
+          snakeP2: world.snakeOriginalP2,
           directionP2: { x: 1, y: 0 },
-          vlifesP2: mundo.vidasP2 - 1,
+          vlifesP2: world.vidasP2 - 1,
           velocidad: 5,
           scoreP2: 10,
-          foodPosition: generateFood(1, mundo.colisionX - 1, 1, mundo.colisionY - 1),
+          foodPosition: generateFood(1, world.colisionX - 1, 1, world.colisionY - 1),
           aparecerVida: false,
           fondoX: 800, fondoY: 800,
           colisionX: 19, colisionY: 19
@@ -262,7 +262,7 @@
     }
 
     // Dibuja algo en el canvas. Aqui se pone todo lo que quieras pintar
-    processing.drawGame = function (mundo) {
+    processing.drawGame = function (world) {
       processing.background(255, 255, 255);
 
       //Pinta el fondo del level
@@ -274,15 +274,15 @@
       processing.image(world.menu === true ? fondoMenu : 0, 0, 0, world.fondoX, world.fondoY)
 
       // Establece la velocidad
-      processing.frameRate(mundo.velocidad);
+      processing.frameRate(world.velocidad);
 
       //Draw the P1 snake's head
       if (world.menu === false) {
         const headP1 = first(world.snakeP1)
         if (world.directionP1.x != 0) {
-          processing.image(world.directionP1.x == 1 ? cabezaDerecha : cabezaIzquierda, head.x * dx, head.y * dy, dx, dy);
+          processing.image(world.directionP1.x == 1 ? cabezaDerecha : cabezaIzquierda, headP1.x * dx, headP1.y * dy, dx, dy);
         } else {
-          processing.image(world.directionP1.y == 1 ? cabezaArriba : cabezaAbajo, head.x * dx, head.y * dy, dx, dy);
+          processing.image(world.directionP1.y == 1 ? cabezaArriba : cabezaAbajo, headP1.x * dx, headP1.y * dy, dx, dy);
         }
       } else {
         return 0
@@ -305,9 +305,9 @@
       if (world.menu === false) {
         const headP2 = first(world.snakeP2)
         if (world.directionP2.x != 0) {
-          processing.image(world.directionP2.x == 1 ? cabezaDerecha : cabezaIzquierda, head.x * dx, head.y * dy, dx, dy);
+          processing.image(world.directionP2.x == 1 ? cabezaDerecha : cabezaIzquierda, headP2.x * dx, headP2.y * dy, dx, dy);
         } else {
-          processing.image(world.directionP2.y == 1 ? cabezaArriba : cabezaAbajo, head.x * dx, head.y * dy, dx, dy);
+          processing.image(world.directionP2.y == 1 ? cabezaArriba : cabezaAbajo, headP2.x * dx, headP2.y * dy, dx, dy);
         }
       } else {
         return 0
@@ -365,9 +365,9 @@
 
       //Pinta las lifes adicionales
       processing.image(world.appearLife === true ? lifes : 0, world.lifePosition.x * dx, world.lifePosition.y * dy, dx, dy);
-    
-    //Pinta el game over
-    processing.image(world.gameOver === true ? gameOver : 0, 0, 0, world.fondoX, world.fondoY);
+
+      //Pinta el game over
+      processing.image(world.gameOver === true ? gameOver : 0, 0, 0, world.fondoX, world.fondoY);
     }
 
 
@@ -381,81 +381,102 @@
     /**
     * Actualiza el mundo en cada tic del reloj. Retorna el nuevo estado del mundo
     */
-    processing.onTic = function (mundo) {
-      return expandirMundo(mostrarVida(colisionP2(colisionP1(comerVida(comerComida(make(moveSnake(mundo))))))));
+    processing.onTic = function (world) {
+      return expandirMundo(mostrarVida(colisionP2(colisionP1(comerVida(comerComida(make(moveSnake(world))))))));
     }
 
     /**
     * Actualiza el mundo cada vez que se oprime una tecla. Retorna el nuevo estado del mundo
     */
-    processing.onKeyEvent = function (mundo, tecla) {
+    processing.onKeyEvent = function (world, tecla) {
       switch (tecla) {
         case processing.UP: //key 'up'
-          if ((mundo.direccionP1.x !== 0) && (mundo.direccionP1.y !== 1)) {
-            return make(mundo, { direccionP1: { y: -1, x: 0 } });
+          if ((world.directionP1.x !== 0) && (world.directionP1.y !== 1)) {
+            return make(world, { directionP1: { y: -1, x: 0 } });
           } else {
-            return make(mundo, {});
+            return make(world, {});
           }
           break;
         case processing.DOWN: //key 'down'
-          if ((mundo.direccionP1.x !== 0) && (mundo.direccionP1.y !== -1)) {
-            return make(mundo, { direccionP1: { y: 1, x: 0 } });
+          if ((world.directionP1.x !== 0) && (world.directionP1.y !== -1)) {
+            return make(world, { directionP1: { y: 1, x: 0 } });
           } else {
-            return make(mundo, {});
+            return make(world, {});
           }
           break;
         case processing.LEFT: //tecla 'izquierda'
-          if ((mundo.direccionP1.x !== 1) && (mundo.direccionP1.y !== 0)) {
-            return make(mundo, { direccionP1: { y: 0, x: -1 } });
+          if ((world.directionP1.x !== 1) && (world.directionP1.y !== 0)) {
+            return make(world, { directionP1: { y: 0, x: -1 } });
           } else {
-            return make(mundo, {});
+            return make(world, {});
           }
           break;
         case processing.RIGHT: //tecla 'abajo'
-          if ((mundo.direccionP1.x !== -1) && (mundo.direccionP1.y !== 0)) {
-            return make(mundo, { direccionP1: { y: 0, x: 1 } });
+          if ((world.directionP1.x !== -1) && (world.directionP1.y !== 0)) {
+            return make(world, { directionP1: { y: 0, x: 1 } });
           } else {
-            return make(mundo, {});
+            return make(world, {});
           }
           break;
         case 87:  // tecla 'w' = arriba
-          if ((mundo.direccionP2.x !== 0) && (mundo.direccionP2.y !== 1)) {
-            return make(mundo, { direccionP2: { y: -1, x: 0 } });
+          if ((world.directionP2.x !== 0) && (world.directionP2.y !== 1)) {
+            return make(world, { directionP2: { y: -1, x: 0 } });
           } else {
-            return make(mundo, {});
+            return make(world, {});
           }
           break;
         case 83:  //tecla 's' = abajo
-          if ((mundo.direccionP2.x !== 0) && (mundo.direccionP2.y !== -1)) {
-            return make(mundo, { direccionP2: { y: 1, x: 0 } });
+          if ((world.directionP2.x !== 0) && (world.directionP2.y !== -1)) {
+            return make(world, { directionP2: { y: 1, x: 0 } });
           } else {
-            return make(mundo, {});
+            return make(world, {});
           } break;
         case 65:  //tecla 'a' = izquierda
-          if ((mundo.direccionP2.x !== 1) && (mundo.direccionP2.y !== 0)) {
-            return make(mundo, { direccionP2: { y: 0, x: -1 } });
+          if ((world.directionP2.x !== 1) && (world.directionP2.y !== 0)) {
+            return make(world, { directionP2: { y: 0, x: -1 } });
           } else {
-            return make(mundo, {});
+            return make(world, {});
           } break;
         case 68:  //tecla 'd' = derecha
-          if ((mundo.direccionP2.x !== -1) && (mundo.direccionP2.y !== 0)) {
-            return make(mundo, { direccionP2: { y: 0, x: 1 } });
+          if ((world.directionP2.x !== -1) && (world.directionP2.y !== 0)) {
+            return make(world, { directionP2: { y: 0, x: 1 } });
           } else {
-            return make(mundo, {})
+            return make(world, {})
           } break;
         case 32:  //tecla 'espacio' = turbo (cambio la velocidad)
-          return make(mundo, { velocidad: toggleNitro(mundo.velocidad) });
+          return make(world, { velocidad: toggleNitro(world.velocidad) });
           break;
         case 80:  //tecla 'p' = pausa
-          if (mundo.pausa === false) {
-            return make(mundo, { pausa: true });
+          if (world.pausa === false) {
+            return make(world, { pausa: true });
           } else {
-            return make(mundo, { pausa: false })
+            return make(world, { pausa: false })
           }
+          break;
+        case 10: //enter
+          if (world.gameOver == true) {
+            return make(world, {
+              snake: world.snakeOriginal,
+              direction: { x: 1, y: 0 },
+              lifes: 2,
+              speed: 5,
+              score: 1,
+              foodPosition: generateFood(1, 17, 1, 17),
+              appearLife: false,
+              fondoX: 800, fondoY: 800,
+              colisionX: 18,
+              level: 1,
+              gameOver: false,
+              pausa: false
+            })
+          }
+          if (world.menu === true) {
+            return make(world, { menu: false, pausa: false, fondoX: 800 });
+          } return make(world, {})
           break;
         default:
           console.log(tecla);
-          return make(mundo, {});
+          return make(world, {});
       }
     }
 

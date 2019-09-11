@@ -503,6 +503,22 @@
           }
           break;
         case 10: //enter
+          if (world.gameOver == true) {
+            return make(world, {
+              snake: world.snakeOriginal,
+              direction: { x: 1, y: 0 },
+              lifes: 2,
+              speed: 5,
+              score: 1,
+              foodPosition: generateFood(1, 17, 1, 17),
+              appearLife: false,
+              fondoX: 800, fondoY: 800,
+              colisionX: 18,
+              level: 1,
+              gameOver: false,
+              pausa: false
+            })
+          }
           if (world.menu === true) {
             return make(world, { menu: false, pausa: false, fondoX: 800 });
           } return make(world, {})
