@@ -223,7 +223,8 @@
         appearLife: false,
         fondoX: 800, fondoY: 800,
         colisionX: 18,
-        level: 1
+        level: 1,
+        score: 1
       })
     }
   }
@@ -290,8 +291,8 @@
         snakeOriginal: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1, y: 4 }],
         snake: [{ x: 3, y: 4 }, { x: 2, y: 4 }, { x: 1, y: 4 }],
         direction: { x: 1, y: 0 },
-        foodPosition: { x: generateFood(1, 19, 1, 19).x, y: generateFood(1, 19, 1, 19).y },
-        lifePosition: { x: generateFood(1, 19, 1, 19).x, y: generateFood(1, 19, 1, 19).y },
+        foodPosition: generateFood(1, 19, 1, 19),
+        lifePosition: generateFood(1, 19, 1, 19),
         obstaclePosition1: { x: 10, y: 10 },
         obstaclePosition2: { x: 10, y: 9 },
         obstaclePosition3: { x: 10, y: 8 },
@@ -466,8 +467,8 @@
     /**
     * Actualiza el world cada vez que se oprime una tecla. Retorna el nuevo estado del world
     */
-    processing.onKeyEvent = function (world, tecla) {
-      switch (tecla) {
+    processing.onKeyEvent = function (world, key) {
+      switch (key) {
         case processing.UP: //key 'up'
           if ((world.direction.x !== 0) && (world.direction.y !== 1)) {
             return make(world, { direction: { y: -1, x: 0 } });
@@ -532,7 +533,7 @@
           }
           break;
         case 10: //enter
-          if (world.gameOver == true) {
+          if (world.gameOver === true) {
             return make(world, {
               snake: world.snakeOriginal,
               direction: { x: 1, y: 0 },
