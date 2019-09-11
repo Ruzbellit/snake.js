@@ -29,6 +29,12 @@
   }
 
 
+  /**
+  * foodObstacle: This function verifies if the food is in the same place that an obstacle,
+  * if so, the food is return a new positin for the food
+  * @param: object
+  * @return: object
+  */
   function foodObstacle(world) {
     if (world.foodPosition.x == world.obstaclePosition1.x && world.foodPosition.y == world.obstaclePosition1.y ||
       world.foodPosition.x == world.obstaclePosition2.x && world.foodPosition.y == world.obstaclePosition2.y ||
@@ -214,7 +220,6 @@
         direction: { x: 1, y: 0 },
         lifes: world.lifes - 1,
         speed: 5,
-        score: 1,
         foodPosition: generateFood(1, 17, 1, 17),
         appearLife: false,
         fondoX: 800, fondoY: 800,
