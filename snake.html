@@ -15,10 +15,12 @@
     }
   }
   /*
-  *
+  * moveSnake: return the world with the new position of the snake using the direction
+  * @param: object
+  * @return: object
   */
   function moveSnake(world) {
-    if (world.pausa === false) {
+    if (world.pause === false) {
       const head = first(world.snake);
       return make(world, { snake: cons({ x: head.x + world.direction.x, y: head.y + world.direction.y }, world.snake.slice(0, length(world.snake) - 1)) });
     } else {
@@ -57,12 +59,16 @@
     }
   }
 
-  // Retorna un entero aleatorio entre min (incluido) y max (excluido)
+  // Returns a random integer between min (included) and max (excluded)
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
   /**generateFood: this function randomly generate the food on the canvas
+   *@param: number
+   *@param: number
+   *@param: number
+   *@param: number
    *@return: position 
    *@example: x: 13, y: 7
    */
@@ -90,13 +96,12 @@
   /**eatLife this function verify if the lifes and the snake’s head are in the same position,
      *if so it returns the world with a new position for the life and an adicional life for the snake.
      *@param: object
-     *@return object
+     *@return: object
      */
   function eatLife(world) {
     if (world.appearLife === true) {
       const head = first(world.snake);
       if (head.x == world.lifePosition.x && head.y == world.lifePosition.y) {
-        // si la cabeza está sobre la comida
         return make(world, {
           lifePosition: generateFood(1, world.colisionX - 1, 1, world.colisionY - 1),
           lifes: world.lifes + 1,
@@ -154,8 +159,11 @@
     }
     return make(world, {})
   }
-
-  function showLife(world) { //cada 8 de score, aparece la vida
+/** This function displays a life eatch time that the score is multiple of 8
+* @param: object
+* @return: object
+*/
+  function showLife(world) {
     if (world.score % 8 == 0) {
       return make(world, { appearLife: true })
     } else {
@@ -163,8 +171,13 @@
     }
   }
 
-
-  function nextLevel(world) { //al llegar a un score de 50 o mas, expande el world de juego(limites de colision y el fondo)
+/** 
+* nextLevel, This function determines whether the next level should be displayed
+* and update the world if so
+* @param: object
+* @return: object
+*/
+  function nextLevel(world) {
     if (world.score == 10) {
       return make(world, {
         fondoX: 1000,
@@ -192,12 +205,11 @@
     }
   }
 
-
   function downgradeLevel(world) {
     if (world.lifes == 0) {
-      return make(world, { gameOver: true, fondoX: 1200, pausa: true })
+      return make(world, { gameOver: true, fondoX: 1200, pause: true })
     } else {
-      return make(world, {  //reinicia la culebra en el punto de partida
+      return make(world, {
         snake: world.snakeOriginal,
         direction: { x: 1, y: 0 },
         lifes: world.lifes - 1,
@@ -211,12 +223,13 @@
       })
     }
   }
-  /*collision: establece los limites de colision del mapa, y al estrellarse resta una vida
-  *@param: object
-  *@return: object
+  /**
+  * collision: set the collision limits of the map, and when crashing subtracts a life
+  * @param: object
+  * @return: object
   */
-  function colision(world) {
-    if ((first(world.snake).x >= 1 && first(world.snake).x <= world.colisionX) && //Limita el espacio de la serpientita, se muere y hace pum!
+  function collision(world) {
+    if ((first(world.snake).x >= 1 && first(world.snake).x <= world.colisionX) &&
       (first(world.snake).y >= 1 && first(world.snake).y <= world.colisionY)) {
       if (headCollision(first(world.snake), rest(world.snake))) {
         return downgradeLevel(world)
@@ -227,17 +240,24 @@
       return downgradeLevel(world);
     }
   }
-  // determina si hay colision entre la cabeza y el resto del cuerpo 
+
+  /**
+  * headCollision: determines if there is collision between the head and the body
+  * @param: object
+  * @param: Array
+  * @return: boolean
+  */
   function headCollision(head, body) {
     return body.find(part => {
       return part.x == head.x && part.y == head.y
     });
   }
 
-  /**toggleNitro: this function change the speed if is 5 change to 15 and vice versa
-  *@param: number
-  *@return: number
-  *@example: toggleNitro(5) -> 10
+  /**
+  * toggleNitro: this function change the speed if is 5 change to 15 and vice versa
+  * @param: number
+  * @return: number
+  * @example: toggleNitro(5) -> 10
   */
   function toggleNitro(speed) {
     if (speed == 5) {
@@ -247,7 +267,7 @@
     }
   }
 
-  //tamaño de los cuadros
+  // square's sizes
   const dx = 40;
   const dy = 40;
 
@@ -293,7 +313,7 @@
         score: 1,
         lifes: 2,
         appearLife: false,
-        pausa: true,
+        pause: true,
         menu: true,
         colisionX: 18,
         colisionY: 18,
@@ -344,18 +364,18 @@
     processing.drawGame = function (world) {
       processing.background(255, 255, 255);
 
-      //Pinta el fondo del level
+      // Draw the background's leven
       processing.image(world.level == 1 ? fondo1 : 0, 0, 0, world.fondoX, world.fondoY)
       processing.image(world.level == 2 ? fondo2 : 0, 0, 0, world.fondoX, world.fondoY)
       processing.image(world.level == 3 ? fondo3 : 0, 0, 0, world.fondoX, world.fondoY)
 
-      //Pinta el menu
+      // Draw the menu
       processing.image(world.menu === true ? fondoMenu : 0, 0, 0, world.fondoX, world.fondoY)
 
-      // Establece la speed
+      // Set the speed
       processing.frameRate(world.speed);
 
-      //Pinta el body de la culebra
+      // Draw the snake's body
       if (world.menu === false) {
         apply(rest(world.snake), s => {
           if (world.direction.x != 0) {
@@ -368,7 +388,7 @@
         return 0
       }
 
-      //Pinta la head del vampiro
+      // Draw vimpire's head
       if (world.menu === false) {
         const head = first(world.snake)
         if (world.direction.x != 0) {
@@ -380,10 +400,10 @@
         return 0
       }
 
-      //Pinta la comida
+      // Draw food
       processing.image(world.menu === false ? food : 0, world.foodPosition.x * dx, world.foodPosition.y * dy, dx, dy);
 
-      //Pinta obstaculo 
+      // Draw obstacle
       processing.image(world.menu === false ? obstaculo1 : 0, world.obstaclePosition1.x * dx, world.obstaclePosition1.y * dy, dx, dy);
       processing.image(world.menu === false ? obstaculo2 : 0, world.obstaclePosition2.x * dx, world.obstaclePosition2.y * dy, dx, dy);
       processing.image(world.menu === false ? obstaculo3 : 0, world.obstaclePosition3.x * dx, world.obstaclePosition3.y * dy, dx, dy);
@@ -410,17 +430,17 @@
         }
       }
 
-      //Pinta el score
+      // Draw the score
       processing.fill(0, 0, 0);
       processing.textFont(processing.PFont, 32);
       processing.text("SCORE: " + world.score, 40, 750);
       processing.textFont(processing.PFont, 32);
       processing.text("LIVES: " + world.lifes, 315, 750);
 
-      //Pinta las lifes adicionales
+      // Draw aditional life
       processing.image(world.appearLife === true ? lifes : 0, world.lifePosition.x * dx, world.lifePosition.y * dy, dx, dy);
 
-      //Pinta el game over
+      // Draw game over
       processing.image(world.gameOver === true ? gameOver : 0, 0, 0, world.fondoX, world.fondoY);
     }
 
@@ -436,7 +456,7 @@
     * Actualiza el world en cada tic del reloj. Retorna el nuevo estado del world
     */
     processing.onTic = function (world) {
-      return nextLevel(showLife(colision(foodObstacle(eatLife(eatFood(hitObstacle(make(moveSnake(world)))))))));
+      return nextLevel(showLife(collision(foodObstacle(eatLife(eatFood(hitObstacle(make(moveSnake(world)))))))));
     }
 
     /**
@@ -501,10 +521,10 @@
           return make(world, { speed: toggleNitro(world.speed) });
           break;
         case 80:  //key 'p' = pause
-          if (world.pausa === false) {
-            return make(world, { pausa: true });
+          if (world.pause === false) {
+            return make(world, { pause: true });
           } else {
-            return make(world, { pausa: false })
+            return make(world, { pause: false })
           }
           break;
         case 10: //enter
@@ -521,11 +541,11 @@
               colisionX: 18,
               level: 1,
               gameOver: false,
-              pausa: false
+              pause: false
             })
           }
           if (world.menu === true) {
-            return make(world, { menu: false, pausa: false, fondoX: 800 });
+            return make(world, { menu: false, pause: false, fondoX: 800 });
           } return make(world, {})
           break;
         default:
