@@ -28,16 +28,26 @@
 
   function foodObstacle(world) {
     if (world.foodPosition.x == world.obstaclePosition1.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition2.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition3.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition4.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition5.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition6.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition7.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition8.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition9.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition10.x && world.foodPosition.y == world.obstaclePosition1.y ||
-      world.foodPosition.x == world.obstaclePosition11.x && world.foodPosition.y == world.obstaclePosition1.y) {
+      world.foodPosition.x == world.obstaclePosition2.x && world.foodPosition.y == world.obstaclePosition2.y ||
+      world.foodPosition.x == world.obstaclePosition3.x && world.foodPosition.y == world.obstaclePosition3.y ||
+      world.foodPosition.x == world.obstaclePosition4.x && world.foodPosition.y == world.obstaclePosition4.y ||
+      world.foodPosition.x == world.obstaclePosition5.x && world.foodPosition.y == world.obstaclePosition5.y ||
+      world.foodPosition.x == world.obstaclePosition6.x && world.foodPosition.y == world.obstaclePosition6.y ||
+      world.foodPosition.x == world.obstaclePosition7.x && world.foodPosition.y == world.obstaclePosition7.y ||
+      world.foodPosition.x == world.obstaclePosition8.x && world.foodPosition.y == world.obstaclePosition8.y ||
+      world.foodPosition.x == world.obstaclePosition9.x && world.foodPosition.y == world.obstaclePosition9.y ||
+      world.foodPosition.x == world.obstaclePosition10.x && world.foodPosition.y == world.obstaclePosition10.y ||
+      world.foodPosition.x == world.obstaclePosition11.x && world.foodPosition.y == world.obstaclePosition11.y ||
+      world.foodPosition.x == world.obstaclePosition12.x && world.foodPosition.y == world.obstaclePosition12.y ||
+      world.foodPosition.x == world.obstaclePosition13.x && world.foodPosition.y == world.obstaclePosition13.y ||
+      world.foodPosition.x == world.obstaclePosition14.x && world.foodPosition.y == world.obstaclePosition14.y ||
+      world.foodPosition.x == world.obstaclePosition15.x && world.foodPosition.y == world.obstaclePosition15.y ||
+      world.foodPosition.x == world.obstaclePosition16.x && world.foodPosition.y == world.obstaclePosition16.y ||
+      world.foodPosition.x == world.obstaclePosition17.x && world.foodPosition.y == world.obstaclePosition17.y ||
+      world.foodPosition.x == world.obstaclePosition18.x && world.foodPosition.y == world.obstaclePosition18.y ||
+      world.foodPosition.x == world.obstaclePosition19.x && world.foodPosition.y == world.obstaclePosition19.y ||
+      world.foodPosition.x == world.obstaclePosition20.x && world.foodPosition.y == world.obstaclePosition20.y ||
+      world.foodPosition.x == world.obstaclePosition21.x && world.foodPosition.y == world.obstaclePosition21.y) {
       return make(world, {
         foodPosition: generateFood(1, world.colisionX - 1, 1, world.colisionY - 1)
       })
@@ -69,20 +79,25 @@
     if (head.x == world.foodPosition.x && head.y == world.foodPosition.y) { // si la head está sobre la comida
       return make(world, {
         snake: cons({ x: head.x + world.direction.x, y: head.y + world.direction.y }, world.snake),
-        foodPosition: generateFood(1, world.colisionX, 1, world.colisionY),
+        foodPosition: generateFood(1, world.colisionX - 1, 1, world.colisionY - 1),
         score: world.score + 1
       });
     }
     return make(world, {});
   }
 
+  /**eatLife this function verify if the lifes and the snake’s head are in the same position,
+     *if so it returns the world with a new position for the life and an adicional life for the snake.
+     *@param: object
+     *@return object
+     */
   function eatLife(world) {
     if (world.appearLife === true) {
       const head = first(world.snake);
       if (head.x == world.lifePosition.x && head.y == world.lifePosition.y) {
         // si la cabeza está sobre la comida
         return make(world, {
-          lifePosition: generateFood(0, world.colisionX, 0, world.colisionY),
+          lifePosition: generateFood(1, world.colisionX - 1, 1, world.colisionY - 1),
           lifes: world.lifes + 1,
           score: world.score + 1,
           appearLife: false
@@ -94,14 +109,18 @@
     }
   }
 
+  /**hitObstacle: this function verify if the snake’s head are in the same position of some ,
+     *@param: object
+     *@return object
+     */
   function hitObstacle(world) {
     const head = first(world.snake);
     if ((head.x == world.obstaclePosition1.x && head.y == world.obstaclePosition1.y) ||
       (head.x == world.obstaclePosition2.x && head.y == world.obstaclePosition2.y) ||
       (head.x == world.obstaclePosition3.x && head.y == world.obstaclePosition3.y) ||
       (head.x == world.obstaclePosition4.x && head.y == world.obstaclePosition4.y) ||
-      (head.x == world.obstaclePosition5.x && head.y == world.obstaclePosition5.y)) { // si la head está sobre el obstaculo
-      return downgradeLevel(world)
+      (head.x == world.obstaclePosition5.x && head.y == world.obstaclePosition5.y)) { //if the snake's head is in the obstacle
+      return downgradeLevel(world)  //return the function that reset to level 1
     }
     if (world.level > 1) {
       if ((head.x == world.obstaclePosition6.x && head.y == world.obstaclePosition6.y) ||
@@ -110,7 +129,7 @@
         (head.x == world.obstaclePosition9.x && head.y == world.obstaclePosition9.y) ||
         (head.x == world.obstaclePosition10.x && head.y == world.obstaclePosition10.y) ||
         (head.x == world.obstaclePosition11.x && head.y == world.obstaclePosition11.y)) {
-        return downgradeLevel(world)
+        return downgradeLevel(world)  //return the function that reset to level 1
       } else {
         if (world.level > 2) {
           if ((head.x == world.obstaclePosition12.x && head.y == world.obstaclePosition12.y) ||
@@ -303,17 +322,16 @@
       obstaculo9 = processing.loadImage('data/obstaculo/obstaculo2.png');
       obstaculo10 = processing.loadImage('data/obstaculo/obstaculo2.png');
       obstaculo11 = processing.loadImage('data/obstaculo/obstaculo2.png');
-      obstaculo12 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo13 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo14 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo15 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo16 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo17 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo18 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo19 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo20 = processing.loadImage('data/obstaculo/obstaculo1.png');
-      obstaculo21 = processing.loadImage('data/obstaculo/obstaculo1.png');
-
+      obstaculo12 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo13 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo14 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo15 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo16 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo17 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo18 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo19 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo20 = processing.loadImage('data/obstaculo/obstaculo3.png');
+      obstaculo21 = processing.loadImage('data/obstaculo/obstaculo3.png');
       gameOver = processing.loadImage('data/fondo/gameOver.png');
     }
 
@@ -387,19 +405,18 @@
         }
       }
 
-
       // Pinta el score
       processing.fill(0, 0, 0);
       processing.textFont(processing.PFont, 32);
-      processing.text("Score: " + world.score, 10, 750);
+      processing.text("SCORE: " + world.score, 40, 750);
       processing.textFont(processing.PFont, 32);
-      processing.text("Lifes: " + world.lifes, 315, 750);
-
-      //Pinta el game over
-      processing.image(world.gameOver === true ? gameOver : 0, 0, 0, world.fondoX, world.fondoY);
+      processing.text("LIVES: " + world.lifes, 315, 750);
 
       //Pinta las lifes adicionales
       processing.image(world.appearLife === true ? lifes : 0, world.lifePosition.x * dx, world.lifePosition.y * dy, dx, dy);
+
+      //Pinta el game over
+      processing.image(world.gameOver === true ? gameOver : 0, 0, 0, world.fondoX, world.fondoY);
     }
 
 
@@ -422,71 +439,73 @@
     */
     processing.onKeyEvent = function (world, tecla) {
       switch (tecla) {
-        case processing.UP: //tecla 'arriba'
+        case processing.UP: //key 'up'
           if ((world.direction.x !== 0) && (world.direction.y !== 1)) {
             return make(world, { direction: { y: -1, x: 0 } });
           } else {
             return make(world, {});
           }
           break;
-        case processing.DOWN: //tecla'abajo
+        case processing.DOWN: //key'down'
           if ((world.direction.x !== 0) && (world.direction.y !== -1)) {
             return make(world, { direction: { y: 1, x: 0 } });
           } else {
             return make(world, {});
           }
           break;
-        case processing.LEFT: //tecla 'izquierda'
+        case processing.LEFT: //key 'left'
           if ((world.direction.x !== 1) && (world.direction.y !== 0)) {
             return make(world, { direction: { y: 0, x: -1 } });
           } else {
             return make(world, {});
           }
           break;
-        case processing.RIGHT: //tecla 'abajo'
+        case processing.RIGHT: //key 'down'
           if ((world.direction.x !== -1) && (world.direction.y !== 0)) {
             return make(world, { direction: { y: 0, x: 1 } });
           } else {
             return make(world, {});
           }
           break;
-        case 87:  // tecla 'w' = arriba
+        case 87:  // key 'w' = up
           if ((world.direction.x !== 0) && (world.direction.y !== 1)) {
             return make(world, { direction: { y: -1, x: 0 } });
           } else {
             return make(world, {});
           }
           break;
-        case 83:  //tecla 's' = abajo
+        case 83:  //key 's' = down
           if ((world.direction.x !== 0) && (world.direction.y !== -1)) {
             return make(world, { direction: { y: 1, x: 0 } });
           } else {
             return make(world, {});
           } break;
-        case 65:  //tecla 'a' = izquierda
+        case 65:  //key 'a' = left
           if ((world.direction.x !== 1) && (world.direction.y !== 0)) {
             return make(world, { direction: { y: 0, x: -1 } });
           } else {
             return make(world, {});
           } break;
-        case 68:  //tecla 'd' = derecha
+        case 68:  //key 'd' = right
           if ((world.direction.x !== -1) && (world.direction.y !== 0)) {
             return make(world, { direction: { y: 0, x: 1 } });
           } else {
             return make(world, {})
           } break;
-        case 32:  //tecla 'espacio' = turbo (cambio la speed)
+        case 32:  //key 'spacebar' = turbo (change the speed)
           return make(world, { speed: toggleNitro(world.speed) });
           break;
-        case 80:  //tecla 'p' = pausa
+        case 80:  //key 'p' = pause
           if (world.pausa === false) {
             return make(world, { pausa: true });
           } else {
             return make(world, { pausa: false })
           }
           break;
-        case 10: //Enter
-          return make(world, { menu: false, pausa: false, fondoX: 800 });
+        case 10: //enter
+          if (world.menu === true) {
+            return make(world, { menu: false, pausa: false, fondoX: 800 });
+          } return make(world, {})
           break;
         default:
           console.log(tecla);
