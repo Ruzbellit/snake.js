@@ -14,6 +14,7 @@
       apply(rest(a), f);
     }
   }
+
   /*
   * moveSnake: return the world with the new position of the snake using the direction
   * @param: object
@@ -22,7 +23,8 @@
   function moveSnake(world) {
     if (world.pause === false) {
       const head = first(world.snake);
-      return make(world, { snake: cons({ x: head.x + world.direction.x, y: head.y + world.direction.y }, world.snake.slice(0, length(world.snake) - 1)) });
+      return make(world, {
+        snake: cons({ x: head.x + world.direction.x, y: head.y + world.direction.y }, world.snake.slice(0, length(world.snake) - 1)) });
     } else {
       return make(world, {});
     }
@@ -164,6 +166,7 @@
     }
     return make(world, {})
   }
+
 /** This function displays a life eatch time that the score is multiple of 8
 * @param: object
 * @return: object
@@ -210,6 +213,12 @@
     }
   }
 
+
+/** 
+* downgradeLevel, This function give back the swnake to the first level and the initial position
+* @param: object
+* @return: object
+*/
   function downgradeLevel(world) {
     if (world.lifes == 0) {
       return make(world, { gameOver: true, fondoX: 1200, pause: true })
@@ -228,6 +237,7 @@
       })
     }
   }
+
   /**
   * collision: set the collision limits of the map, and when crashing subtracts a life
   * @param: object
@@ -393,7 +403,7 @@
         return 0
       }
 
-      // Draw vimpire's head
+      // Draw vampire's head
       if (world.menu === false) {
         const head = first(world.snake)
         if (world.direction.x != 0) {
@@ -405,10 +415,10 @@
         return 0
       }
 
-      // Draw food
+      // Draw the food
       processing.image(world.menu === false ? food : 0, world.foodPosition.x * dx, world.foodPosition.y * dy, dx, dy);
 
-      // Draw obstacle
+      // Draw the obstacles
       processing.image(world.menu === false ? obstaculo1 : 0, world.obstaclePosition1.x * dx, world.obstaclePosition1.y * dy, dx, dy);
       processing.image(world.menu === false ? obstaculo2 : 0, world.obstaclePosition2.x * dx, world.obstaclePosition2.y * dy, dx, dy);
       processing.image(world.menu === false ? obstaculo3 : 0, world.obstaclePosition3.x * dx, world.obstaclePosition3.y * dy, dx, dy);
@@ -442,7 +452,7 @@
       processing.textFont(processing.PFont, 32);
       processing.text("LIVES: " + world.lifes, 315, 750);
 
-      // Draw aditional life
+      // Draw the aditional life
       processing.image(world.appearLife === true ? lifes : 0, world.lifePosition.x * dx, world.lifePosition.y * dy, dx, dy);
 
       // Draw game over
@@ -532,7 +542,7 @@
             return make(world, { pause: false })
           }
           break;
-        case 10: //enter
+        case 10: //key 'enter'
           if (world.gameOver === true) {
             return make(world, {
               snake: world.snakeOriginal,
